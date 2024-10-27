@@ -10,26 +10,20 @@ from sklearn.model_selection import TimeSeriesSplit
 
 import torch
 
-from Crypto_Price_Prediction_v2.train import train
-from Crypto_Price_Prediction_v2.Models.GRU import GRUModel
-from Crypto_Price_Prediction_v2.Models.LSTM import LSTMModel
-from Crypto_Price_Prediction_v2.Models.RNN import RNNModel
+from train import train
+from Models.GRU import GRUModel
+from Models.LSTM import LSTMModel
+from Models.RNN import RNNModel
 
-import Crypto_Price_Prediction_v2.config as config
+from config import config
 
-df = pd.read_csv('data\\bitcoin\\btcusd_1-min_data.csv')
+df = pd.read_csv('..\\data\\bitcoin\\btcusd_1-min_data.csv')
 
-# Convert the timestamp to datetime
+
+df = df[['Close', "Timestamp"]]
 df['Timestamp'] = pd.to_datetime(df['Timestamp'], unit='s')
+df.set_index("Timestamp", inplace=True)
 
-# Limit to hourly data
-df.set_index('Timestamp', inplace=True)
-
-df = df.resample('h').mean()
-
-df.dropna(inplace=True)
-
-df = df[['Close']]
 
 def generate_time_lags(df, n_lags):
     df_n = df.copy()
@@ -54,7 +48,6 @@ df = (
     .assign(month = df.index.month)
     )
 
-
 def generate_cyclical_features(df, col_name, period, start_num=0):
     # Create sin and cos features based on the specified column
     df[f'sin_{col_name}'] = np.sin(2 * np.pi * (df[col_name] - start_num) / period)
@@ -68,9 +61,9 @@ df = generate_cyclical_features(df, 'day_of_week', 7, 0)
 df = generate_cyclical_features(df, 'month', 12, 1)
 
 index = df.index
-df.reset_index(inplace=True)
-X = df.loc[:, df.columns != "open"]
-y = df.loc[:, df.columns == "open"]
+df.reset_index(drop=True, inplace=True)
+X = df.loc[:, df.columns != "Close"]
+y = df.loc[:, df.columns == "Close"]
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

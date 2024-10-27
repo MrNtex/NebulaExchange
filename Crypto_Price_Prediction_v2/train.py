@@ -8,7 +8,7 @@ from torch.utils.data import TensorDataset, DataLoader
 
 from tqdm import tqdm
 
-from Crypto_Price_Prediction_v2 import config
+from config import config
 
 class train:
     def __init__(self):
@@ -33,7 +33,7 @@ class train:
             scheduler = ReduceLROnPlateau(optimizer, mode='max', patience=config.LR_PATIENCE, verbose=False, factor=config.LR_FACTOR)
 
             # Create loss function
-            criterion = nn.MSELoss(reductuin='mean')
+            criterion = nn.MSELoss(reduction='mean')
 
             print('Train size:', len(train_index), "test_size:", len(valid_index)), print("\n")
 
