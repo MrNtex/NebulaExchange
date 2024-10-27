@@ -73,7 +73,7 @@ model = BitcoinLSTM().to(device)
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
-epochs = 2
+epochs = 50
 
 for epoch in range(epochs):
     for X_batch, Y_batch in tqdm(dataloader, desc=f'Epoch {epoch+1}/{epochs}'):
@@ -107,3 +107,11 @@ predicted_df = pd.DataFrame(predictions, columns=['Predicted Close'])
 
 # Save the predictions
 predicted_df.to_csv('data\\bitcoin\\predicted_btcusd_1-min_data_hourly.csv')
+
+plt.figure(figsize=(12, 6))
+plt.plot(predicted_df['Predicted Close'], label='Predicted Prices', color='blue')  # Correctly reference the column name
+plt.title('Predicted Bitcoin Prices')
+plt.xlabel('Time Step')
+plt.ylabel('Price (USD)')
+plt.legend()
+plt.show()

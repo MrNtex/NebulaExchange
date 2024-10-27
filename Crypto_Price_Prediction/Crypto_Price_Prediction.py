@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 
 class BitcoinLSTM(nn.Module):
-    def __init__(self, input_size=1, hidden_layer_size=64, output_size=1, num_layers=2):
+    def __init__(self, input_size=1, hidden_layer_size=128, output_size=1, num_layers=3):
         super(BitcoinLSTM, self).__init__()
         self.hidden_layer_size = hidden_layer_size
         self.num_layers = num_layers
@@ -12,6 +12,8 @@ class BitcoinLSTM(nn.Module):
         
         # Define the output layer
         self.linear = nn.Linear(hidden_layer_size, output_size)
+
+        self.dropout = nn.Dropout(0.2)
 
     def forward(self, input_seq):
 
