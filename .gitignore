@@ -1,3 +1,4 @@
 data/bitcoin/btcusd_1-min_data.csv
 /env
 __pycache__/
+data/

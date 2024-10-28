@@ -1,13 +1,18 @@
-from matplotlib import pyplot as plt
-import pandas as pd
+import datetime
+import matplotlib.pyplot as plt
 import numpy as np
-
-from sklearn.preprocessing import MaxAbsScaler, MinMaxScaler, RobustScaler, StandardScaler
+import os
+import pandas as pd
+import time
+import torch
+import torch.nn as nn
 
 
 from sklearn.model_selection import TimeSeriesSplit
-
-import torch
+from sklearn.preprocessing import MaxAbsScaler, MinMaxScaler, RobustScaler, StandardScaler
+from torch.optim.lr_scheduler import ReduceLROnPlateau
+from torch.utils.data import TensorDataset, DataLoader
+from tqdm import tqdm
 
 from train import train
 from Models.GRU import GRUModel
@@ -16,23 +21,23 @@ from Models.RNN import RNNModel
 
 from config import config
 
-df = pd.read_csv("C:\\Users\\ntexy\\Documents\\NebulaExchange\\data\\bitcoin\\btcusd_1-min_data_hourly.csv", sep=',')
+df = pd.read_csv("C:\\Users\\ntexy\\Documents\\NebulaExchange\\data\\binance-dataset.csv", sep=',')
 
-columns_to_drop = ["Open","High","Low","Volume"]
-df.drop(columns=columns_to_drop, inplace=True)
 
-df = df[['Close', 'Timestamp']]
-df.set_index("Timestamp", inplace=True)  # Set 'Timestamp' as index
+
+df = df[["open", "open_time_utc"]]
+df.set_index("open_time_utc", inplace=True)
 df.index = pd.to_datetime(df.index)
-print(df.head())
+print(f"Dataframe shape: {df.shape}")
+df.head()# Set 'Timestamp' as index
 
 def generate_time_lags(df, n_lags):
     df_n = df.copy()
     for n in range(1, n_lags + 1):
-        df_n[f'Close_Lag_{n}'] = df_n['Close'].shift(n)
+        df_n[f"lag{n}"] = df_n["open"].shift(n)
     df_n = df_n.iloc[n_lags:]
     return df_n
-
+    
 input_dim = 60
 df_copy = df.copy()
 df = generate_time_lags(df, input_dim)
@@ -40,29 +45,33 @@ df = generate_time_lags(df, input_dim)
 # Adding day, day_of_week, and month columns
 df = (
     df
-    .assign(minute = df.index.minute)
-    .assign(hour = df.index.hour)
     .assign(day=df.index.day)
     .assign(day_of_week=df.index.dayofweek)
     .assign(month=df.index.month)
 )
 
 def generate_cyclical_features(df, col_name, period, start_num=0):
-    kwargs = {
-        f'sin_{col_name}' : lambda x: np.sin(2*np.pi*(df[col_name]-start_num)/period),
-        f'cos_{col_name}' : lambda x: np.cos(2*np.pi*(df[col_name]-start_num)/period)    
-             }
-    return df.assign(**kwargs).drop(columns=[col_name])
+    # Create sin and cos features based on the specified column
+    df[f'sin_{col_name}'] = np.sin(2 * np.pi * (df[col_name] - start_num) / period)
+    df[f'cos_{col_name}'] = np.cos(2 * np.pi * (df[col_name] - start_num) / period)
+    # Drop the original column
+    return df.drop(col_name, axis=1)
 
-df = generate_cyclical_features(df, 'hour', 24, 0)
-df = generate_cyclical_features(df, 'day', 31, 0)
-df = generate_cyclical_features(df, 'day_of_week', 7, 0)
-df = generate_cyclical_features(df, 'month', 12, 1)
+#df = generate_cyclical_features(df, 'hour', 24, 0)
+df = (
+    df
+    .assign(minute = df.index.minute)
+    .assign(hour = df.index.hour)
+    .assign(day = df.index.day)
+    .assign(month = df.index.month)
+    .assign(day_of_week = df.index.dayofweek)
+    )
+df.drop(columns=["month"], inplace=True)
 
 index = df.index
 df.reset_index(drop=True, inplace=True)
-X = df.loc[:, df.columns != "Close"]
-y = df.loc[:, df.columns == "Close"]
+X = df.loc[:, df.columns != "open"]
+y = df.loc[:, df.columns == "open"]
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -144,19 +153,17 @@ y_trues = unstack(y_trues)
 import plotly.express as px
 import plotly.graph_objects as go
 
-min_length = min(len(oof), len(y_trues), len(index))
-oof = oof[:min_length]
-y_trues = y_trues[:min_length]
-index = index[:min_length]
-
-plot_df = pd.DataFrame({'Timestamp': index, 'oof': oof, 'y_true': y_trues})
-plot_df.sort_values(by="Timestamp", inplace=True)
+plot_df = pd.DataFrame([oof, y_trues]).T
+plot_df.columns = ["oof","y_true"]
+plot_df["date"] = index[0:4850]
+plot_df = plot_df[0:4800]
+plot_df.sort_values(by="date",inplace=True)
 
 fig = go.Figure()
 
 fig1 = fig.add_trace(
     go.Scatter(
-        x = plot_df["Timestamp"],
+        x = plot_df["date"],
         y = plot_df["oof"],
         name = "Predicted", # LINE LEGEND
         marker=dict(color="#eb9607"), # LINE COLOR
@@ -164,7 +171,7 @@ fig1 = fig.add_trace(
 )
 fig2 = fig.add_trace(
     go.Scatter(
-        x = plot_df["Timestamp"],
+        x = plot_df["date"],
         y = plot_df["y_true"],
         name = "Actual", # LINE LEGEND
         marker=dict(color="#ecc257"), # LINE COLOR
