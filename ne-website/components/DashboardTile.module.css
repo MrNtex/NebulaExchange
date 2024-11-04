@@ -2,6 +2,8 @@
     position: relative;
     overflow: hidden;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(99, 102, 241, 0.1); /* Subtle indigo border */
+    border-radius: 0.5rem; /* Optional: Rounded corners */
   }
   
   .dashboardCard:hover {
@@ -16,7 +18,7 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-    background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.15), transparent 60%);
+    background: none;
     transition: background 0.2s ease;
   }
   

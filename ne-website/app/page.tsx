@@ -1,3 +1,4 @@
+import { PieChartComposition } from "@/components/charts/pie-chart";
 import { HeroTitle } from "@/components/HeroTitle";
 import { FlipWords } from "@/components/ui/flip-words";
 import Image from "next/image";
