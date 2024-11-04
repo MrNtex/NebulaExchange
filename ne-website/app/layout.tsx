@@ -27,9 +27,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-950 text-neutral-900 dark:bg-neutral-900 dark:text-neutral-100`}
       >
         <Header />
-        {children}
+        <div className="mt-12">
+          {children}
+        </div>
+        
       </body>
     </html>
   );
