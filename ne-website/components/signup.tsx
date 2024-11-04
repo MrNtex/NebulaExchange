@@ -19,13 +19,19 @@ export default function SignUp() {
   const [state, action] = useActionState(signup, undefined)
 
   return (
-    <form action={action}>
-        <h1>Sign In 🚀</h1>
-        <Label>Username</Label>
-        <Input placeholder='Username' name="username"/>
+    <div className='p-3 w-96'>
+      <form action={action} className='flex flex-col gap-5'>
+        <h1 className='text-2xl'>Sign In 🚀</h1>
+        <div>
+          <Label>Username</Label>
+          <Input placeholder='Username' name="username"/>
+        </div>
+        <div>
         <Label>Email</Label>
         <Input placeholder='Email' type='email' name="email"/>
         {state?.errors?.email && <p>{state.errors.email}</p>}
+        </div>
+        <div >
         <Label>Password</Label>
         <Input placeholder='Password' type='password' name="password"/>
         {state?.errors?.password && (
@@ -38,11 +44,17 @@ export default function SignUp() {
             </ul>
           </div>
         )}
+        </div>
+        <div>
         <Label>Confirm Password</Label>
         <Input placeholder='Confirm Password' type='password' name="confirmpassword"/>
-        <Button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2' type='submit'>
+        
+        </div>
+        <Button className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-6 px-4 rounded mt-2 justify-center items-center w-full' type='submit'>
           Sign In
         </Button>
-    </form>
+      </form>
+    </div>
+    
   )
 }

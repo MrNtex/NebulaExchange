@@ -7,10 +7,13 @@ import React from 'react'
 
 export default function page() {
   return (
-    <div className='mt-[15%] flex'>
+    <div className='flex justify-around mx-24 items-center h-screen'>
       <HeroTitle />
       <Tile>
-        <SignUp/>
+        <div className=''>
+          <SignUp/>
+        </div>
+        
       </Tile>
     </div>
   )
