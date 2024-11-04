@@ -8,7 +8,7 @@ import { auth, db } from '@/firebase'
 
 interface UserData {
   email: string;
-  nickname: string;
+  name: string;
 
   uid: string;
 }
@@ -17,7 +17,6 @@ interface AuthContextType {
   user: User | null;
   userDataObj: UserData | null;
   setUserDataObj: (data: UserData) => void;
-  signup: (email: string, password: string, firstName: string, lastName: string) => Promise<any>;
   login: (email: string, password: string) => Promise<any>;
   logout: () => Promise<void>;
   loading: boolean;
@@ -27,7 +26,6 @@ const defaultAuthContext: AuthContextType = {
   user: null,
   userDataObj: null,
   setUserDataObj: () => {},
-  signup: async () => {},
   login: async () => {},
   logout: async () => {},
   loading: false,
@@ -46,28 +44,6 @@ export function AuthProvider(props: { children: any }) {
   const [loading, setLoading] = useState(true)
 
   const router = useRouter()
-
-  // AUTH HAN
-  function signup(email: string, password: string, firstName: string, lastName: string) {
-    let uid = '';
-    return createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
-        const docRef = doc(db, 'users', user.uid);
-  
-        uid = user.uid;
-        return setDoc(docRef, {
-          email,
-          firstName,
-          uid: user.uid,
-        });
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        console.error(errorCode, errorMessage);
-      })
-  }
 
   function login(email: string, password: string) {
     return signInWithEmailAndPassword(auth, email, password)
@@ -96,7 +72,6 @@ export function AuthProvider(props: { children: any }) {
         const docSnap = await getDoc(docRef);
         let firebaseData = {};
         if (docSnap.exists()) {
-          console.log('Found user data.');
           const data = docSnap.data();
   
           // Assign the converted dates back to the firebaseData object
@@ -134,7 +109,6 @@ export function AuthProvider(props: { children: any }) {
     user,
     userDataObj,
     setUserDataObj,
-    signup,
     login,
     logout,
     loading

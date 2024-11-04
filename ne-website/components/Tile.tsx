@@ -10,7 +10,7 @@ interface DashboardTileProps {
   children: ReactNode;
 }
 
-export default function DashboardTile({
+export default function Tile({
   colSpan = 2,
   mdColSpan = colSpan/2,
   title,

@@ -5,7 +5,7 @@ export function HeroTitle() {
   const words = ["faster", "better", "safer", "modern"];
  
   return (
-    <div className="ml-[15%] mt-[15%] justify-normal items-center px-4">
+    <div className="justify-normal items-center px-4">
       <div className="text-6xl font-extralight mx-auto text-neutral-600 dark:text-neutral-400">
         Trade
         <FlipWords className="text-white" words={words} duration={1000}/> <br />

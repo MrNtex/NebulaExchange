@@ -1,7 +1,28 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
+import { useAuth } from '@/context/authcontext'
 
 export default function Header() {
+  const { user, userDataObj} = useAuth()
+
+  const Right = () => {
+    if (user) {
+      return (
+        <div>
+          {userDataObj?.name}
+          Logout
+        </div>
+      )
+    }
+    return (
+      <div className='flex items-center'>
+        Login
+      </div>
+    )
+  }
+
   return (
     <div className='w-full top-0 fixed bg-black flex justify-between'>
         <a href='./' className='flex items-center justify-center'>
@@ -11,7 +32,7 @@ export default function Header() {
             </div>
         </a>
         <div>
-            Login
+          <Right/>
         </div>
     </div>
   )
