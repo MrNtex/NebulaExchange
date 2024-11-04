@@ -21,7 +21,7 @@ export default function SignUp() {
   return (
     <div className='p-3 w-96'>
       <form action={action} className='flex flex-col gap-5'>
-        <h1 className='text-2xl'>Sign In 🚀</h1>
+        <h1 className='text-2xl'>Sign Up 🚀</h1>
         <div>
           <Label>Username</Label>
           <Input placeholder='Username' name="username"/>
