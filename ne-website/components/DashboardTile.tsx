@@ -11,9 +11,8 @@ interface DashboardTileProps {
 }
 
 export default function DashboardTile({
-  colSpan = 12,
+  colSpan = 2,
   mdColSpan = colSpan/2,
-  lgColSpan = colSpan/3,
   title,
   children,
 }: DashboardTileProps) {
@@ -27,12 +26,13 @@ export default function DashboardTile({
   };
 
   // Dynamically construct the column classes based on props
-  const colClasses = `col-span-${colSpan} md:col-span-${mdColSpan} lg:col-span-${lgColSpan}`;
+  const colClasses = `col-span-${colSpan} lg:col-span-${colSpan} md:col-span-${mdColSpan}`;
 
   return (
     <div
-      className={`${styles.dashboardCard} ${colClasses} rounded-lg shadow-md p-4`}
+      className={`${styles.dashboardCard} rounded-lg shadow-md p-4`}
       onMouseMove={handleMouseMove}
+      style={{ gridColumn: `span ${colSpan}` }}
     >
       <h2 className="text-xl font-semibold text-white p-4">{title}</h2>
       {children}
