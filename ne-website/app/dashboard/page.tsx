@@ -26,7 +26,7 @@ function DashboardContent() {
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        console.log('fetching crypto for user');
+        console.log('fetching crypto for user with id', user.uid);
         const response = await fetchCryptoForUser(user!.uid) as Token[];
         console.log(response);
       }
