@@ -9,6 +9,9 @@ import { useFormState } from 'react-dom';
 import { signup } from '@/actions/auth'
 import { useAuth } from '@/context/authcontext';
 
+import { auth, db } from '@/firebase';
+import { FormState } from '@/lib/definitions';
+
 export default function SignUp() {
     
   const [username, setUsername] = useState('')
@@ -16,7 +19,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
 
-  const [state, action] = useActionState(signup, undefined)
+  const [state, action] = useActionState((state: FormState, data: FormData) => signup(state, data, auth, db), undefined)
 
   return (
     <div className='p-3 w-96'>

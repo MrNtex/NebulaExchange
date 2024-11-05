@@ -1,12 +1,10 @@
-import { auth, db } from '@/firebase';
+
 import { SignupFormSchema, FormState } from '@/lib/definitions';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 
-export async function signup(state: FormState, formData: FormData) {
+export async function signup(state: FormState, formData: FormData, auth: any, db: any) {
   // Validate form fields
-  console.log('formData', formData);
-
   const validatedFields = SignupFormSchema.safeParse({
     name: formData.get('username'),
     email: formData.get('email'),
