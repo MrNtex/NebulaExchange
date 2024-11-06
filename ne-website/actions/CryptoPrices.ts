@@ -2,14 +2,12 @@
 
 import axios from 'axios';
 import React from 'react';
+import coins from '@/data/coins';
 
-// Function to fetch prices from the CoinGecko API
-const fetchCryptoPrices = async () => {
-  const response = await axios.get('https://api.coingecko.com/api/v3/simple/price', {
-    params: {
-      ids: 'bitcoin,ethereum,cardano', // Specify the crypto IDs you want to fetch
-      vs_currencies: 'usd',
-    },
-  });
-  return response.data;
+export const fetchCoinPrice = async (coin: keyof typeof coins) => {
+  const coinData = coins[coin];
+
+  const response = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${coinData.api}&vs_currencies=usd`);
+  const data = await response.json();
+  return data[coinData.api]?.usd || 0;
 };
