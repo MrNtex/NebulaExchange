@@ -16,9 +16,9 @@ namespace CoinGeckoAPI.Controllers
 
         // GET: api/coins
         [HttpGet]
-        public async Task<IActionResult> GetCoins()
+        public IActionResult GetCoins()
         {
-            var coins = await coinService.GetCoinsAsync(); // Await the async method
+            var coins = coinService.GetCoins(); 
             if (coins == null || coins.Count == 0)
             {
                 return NotFound("No coins found.");
