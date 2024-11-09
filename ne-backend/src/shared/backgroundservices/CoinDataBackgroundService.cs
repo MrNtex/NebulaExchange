@@ -1,3 +1,4 @@
+using CoinGeckoAPI.Shared.Scripts;
 using CoinGeckoAPI.Shared.Services;
 using Microsoft.Extensions.Hosting;
 using System;
@@ -8,9 +9,14 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
 {
   public class Coin
   {
-    public string Id { get; set; } = string.Empty;
-    public string Symbol { get; set; } = string.Empty;
-    public string Name { get; set; } = string.Empty;
+    public string id { get; set; } = string.Empty;
+    public string symbol	 { get; set; } = string.Empty;
+    public string name { get; set; } = string.Empty;
+    public string image { get; set; } = string.Empty;
+    public double? market_cap { get; set; }
+    public double? total_volume { get; set; }
+    public double? price_change_percentage_24h { get; set; }
+    public double? current_price { get; set; }
   }
   public class CoinDataBackgroundService : IHostedService
   {
@@ -40,12 +46,29 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
         return Task.CompletedTask;
     }
 
+  const int MAX_COINS = 250;
+  const int MAX_PAGES = 3;
     private async Task FetchCoinData()
     {
+      httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("NebulaExchange/2.0");
       try
       {
-        coins = await httpClient.GetFromJsonAsync<List<Coin>>("https://api.coingecko.com/api/v3/coins/list") ?? new List<Coin>();
-        Console.WriteLine($"{DateTime.Now}: Fetched {coins.Count} coins.");
+        for (int i = 1; i <= MAX_PAGES; i++)
+        {
+          var response = await httpClient.GetAsync($"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page={MAX_COINS}&page={i}");
+          if (response.IsSuccessStatusCode)
+          {
+            coins.AddRange(await response.Content.ReadFromJsonAsync<List<Coin>>() ?? new List<Coin>());
+            
+            Console.WriteLine($"{DateTime.Now}: Fetched {coins.Count} coins.");
+          }
+          else
+          {
+            var responseBody = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Error fetching coin data: {responseBody}");
+          }
+        }
+        CoinGrouping.GroupCoins(coins);
       }
       catch (Exception ex)
       {

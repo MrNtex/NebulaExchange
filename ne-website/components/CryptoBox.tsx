@@ -12,7 +12,7 @@ interface CryptoBoxProps {
 export default function CryptoBox(props: CryptoBoxProps) {
   return (
     <a href={`/coin/${props.tag}`} 
-      className='flex items-center justify-between px-4 py-0 hover:py-1 bg-black bg-opacity-0 hover:bg-opacity-60 transition-bg-opacity ease-in-out duration-300'
+      className='flex items-center justify-between px-4 py-1 hover:py-2 bg-black bg-opacity-0 hover:bg-opacity-60 transition-bg-opacity ease-in-out duration-300'
     >
       <div className='flex items-center'>
         <div>
