@@ -5,7 +5,7 @@ export default function Main(props: { children: any }) {
   const {children} = props
 
   return (
-    <main>
+    <main className='justify-center'>
         <AuthProvider>
             {children}
         </AuthProvider>

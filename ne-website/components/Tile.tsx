@@ -8,6 +8,7 @@ interface DashboardTileProps {
   lgColSpan?: number;
   title?: string;
   children: ReactNode;
+  className?: string;
 }
 
 export default function Tile({
@@ -15,6 +16,7 @@ export default function Tile({
   mdColSpan = colSpan/2,
   title,
   children,
+  className,
 }: DashboardTileProps) {
   const handleMouseMove = (event: React.MouseEvent) => {
     const card = event.currentTarget as HTMLDivElement;
@@ -30,11 +32,11 @@ export default function Tile({
 
   return (
     <div
-      className={`${styles.dashboardCard} rounded-lg shadow-md p-4`}
+      className={`${styles.dashboardCard} rounded-lg shadow-md ${className} py-2`}
       onMouseMove={handleMouseMove}
       style={{ gridColumn: `span ${colSpan}` }}
     >
-      <h2 className="text-xl font-semibold text-white p-4">{title}</h2>
+      <h2 className="text-xl font-semibold text-white p-2 px-4">{title}</h2>
       {children}
     </div>
   );

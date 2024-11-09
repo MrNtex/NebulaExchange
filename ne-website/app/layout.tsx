@@ -33,7 +33,7 @@ export default function RootLayout({
       >
         <Main>
           <Header />
-          <div className="mt-12">
+          <div className="mt-12 w-[70%]  mx-auto flex justify-center">
             {children}
           </div>
         </Main>
