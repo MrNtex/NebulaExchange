@@ -50,6 +50,7 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
   const int MAX_PAGES = 3;
     private async Task FetchCoinData()
     {
+      coins.Clear();
       httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("NebulaExchange/2.0");
       try
       {
@@ -59,8 +60,6 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
           if (response.IsSuccessStatusCode)
           {
             coins.AddRange(await response.Content.ReadFromJsonAsync<List<Coin>>() ?? new List<Coin>());
-            
-            Console.WriteLine($"{DateTime.Now}: Fetched {coins.Count} coins.");
           }
           else
           {
@@ -68,11 +67,16 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
             Console.WriteLine($"Error fetching coin data: {responseBody}");
           }
         }
-        CoinGrouping.GroupCoins(coins);
+        
       }
       catch (Exception ex)
       {
         Console.WriteLine($"Error fetching coin data: {ex.Message}");
+      }
+      finally
+      {
+        CoinGrouping.GroupCoins(coins);
+        Console.WriteLine($"{DateTime.Now}: Fetched {coins.Count} coins.");
       }
     }
 

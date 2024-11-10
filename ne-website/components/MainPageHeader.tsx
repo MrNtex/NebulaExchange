@@ -3,15 +3,21 @@
 import React from 'react'
 import Tile from './Tile'
 import CryptoBox from './CryptoBox'
+import { Skeleton } from './ui/skeleton';
+import MarketCap from './MarketCap';
+
 
 
 export default function MainPageHeader() {
   const [cryptoPrices, setCryptoPrices] = React.useState<Coin[][]>([])
+  const [loading, setLoading] = React.useState<boolean>(true)
 
   React.useEffect(() => {
     console.log('Fetching data from server...')
+    
 
     const fetchData = async () => {
+      setLoading(true);
       const marketCapData = await getPrices('marketcap');
       const volumeData = await getPrices('pricechange');
       const geckoData = await getPrices('volume');
@@ -20,8 +26,10 @@ export default function MainPageHeader() {
         // Set the state with the array of data fetched
         setCryptoPrices([marketCapData, volumeData, geckoData]);
       }
+      setLoading(false);
     };
     fetchData();
+    
   }, []);
 
   const getPrices = async (order: string) => {
@@ -34,6 +42,23 @@ export default function MainPageHeader() {
       console.log('Error fetching data', error)
     }
   };
+
+  const ListCoinsInBox: React.FC<{ idx: number }> = ({ idx }) => {
+    if (loading) {
+      return ( <div className='flex flex-col gap-2 items-center pt-2'>
+        <Skeleton className="h-[40px] w-[300px] rounded-xl" />
+        <Skeleton className="h-[40px] w-[300px] rounded-xl" />
+        <Skeleton className="h-[40px] w-[300px] rounded-xl" />
+      </div>);
+    }
+    return (
+      <>
+        {cryptoPrices[idx]?.map((coin) => (
+          <CryptoBox key={coin.id} tag={coin.symbol} image={coin.image} currentPrice={coin.current_price} change={coin.price_change_percentage_24h} />
+        ))}
+      </>
+    )
+  }
   
   type Coin = {
     id: string
@@ -48,20 +73,15 @@ export default function MainPageHeader() {
   return (
     <div className='flex justify-around py-4'>
       <Tile title='💸 By Market Cap' className='min-w-80'>
-        {cryptoPrices[0]?.map((coin) => (
-          <CryptoBox key={coin.id} tag={coin.symbol} image={coin.image} currentPrice={coin.current_price} change={coin.price_change_percentage_24h} />
-        ))}
+        <ListCoinsInBox idx={0} />
       </Tile>
       <Tile title='🚀 Largest Gainers' className='min-w-80'>
-        {cryptoPrices[1]?.map((coin) => (
-          <CryptoBox key={coin.id} tag={coin.symbol} image={coin.image} currentPrice={coin.current_price} change={coin.price_change_percentage_24h} />
-        ))}
+        <ListCoinsInBox idx={1} />
       </Tile>
       <Tile title='By Market Cap' className='min-w-80'>
-        {cryptoPrices[2]?.map((coin) => (
-          <CryptoBox key={coin.id} tag={coin.symbol} image={coin.image} currentPrice={coin.current_price} change={coin.price_change_percentage_24h} />
-        ))}
+        <ListCoinsInBox idx={2} />
       </Tile>
+      <MarketCap/>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import React from 'react'
 import Tile from './Tile'
 import Image from 'next/image'
+import ChangeMarker from './ChangeMarker'
 
 interface CryptoBoxProps {
   tag: string
@@ -23,7 +24,7 @@ export default function CryptoBox(props: CryptoBoxProps) {
       
       <div className='text-right right-0'>
         <p className='text-lg font-semibold'>{props.currentPrice}</p>
-        <p className='text-xs text-gray-400'>{props.change}</p>
+        <ChangeMarker change={props.change} className='text-xs text-gray-400'/>
       </div>
     </a>
   )
