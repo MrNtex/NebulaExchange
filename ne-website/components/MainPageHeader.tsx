@@ -5,6 +5,7 @@ import Tile from './Tile'
 import CryptoBox from './CryptoBox'
 import { Skeleton } from './ui/skeleton';
 import MarketCap from './MarketCap';
+import { Coin } from '@/types/types';
 
 
 
@@ -60,14 +61,7 @@ export default function MainPageHeader() {
     )
   }
   
-  type Coin = {
-    id: string
-    symbol: string
-    name: string
-    image: string
-    current_price: number
-    price_change_percentage_24h: number
-  }
+  
   
 
   return (
@@ -78,10 +72,10 @@ export default function MainPageHeader() {
       <Tile title='🚀 Largest Gainers' className='min-w-80'>
         <ListCoinsInBox idx={1} />
       </Tile>
-      <Tile title='By Market Cap' className='min-w-80'>
+      <Tile title='🔥 Trending' className='min-w-80'>
         <ListCoinsInBox idx={2} />
       </Tile>
-      <MarketCap/>
+      <MarketCap topCoins={cryptoPrices[0]?.slice(0,3)}/>
     </div>
   )
 }

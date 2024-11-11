@@ -1,4 +1,5 @@
 import { AuthProvider } from '@/context/authcontext'
+
 import React from 'react'
 
 export default function Main(props: { children: any }) {
@@ -6,9 +7,9 @@ export default function Main(props: { children: any }) {
 
   return (
     <main className='justify-center'>
-        <AuthProvider>
-            {children}
-        </AuthProvider>
+      <AuthProvider>
+        {children}
+      </AuthProvider>
     </main>
   )
 }
