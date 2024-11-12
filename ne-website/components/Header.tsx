@@ -31,6 +31,12 @@ export default function Header() {
                 Nebula Exchange
             </div>
         </a>
+        <div className='flex gap-8'>
+          <a href='./'>Home</a>
+          <a href='./'>Trade</a>
+          <a href='./'>Portfolio</a>
+          <a href='./'>About</a>
+        </div>
         <div>
           <Right/>
         </div>
