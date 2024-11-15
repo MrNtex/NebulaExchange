@@ -3,6 +3,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { useAuth } from '@/context/authcontext'
+import { MenuBar } from './MenuBar'
 
 export default function Header() {
   const { user, userDataObj} = useAuth()
@@ -31,12 +32,7 @@ export default function Header() {
                 Nebula Exchange
             </div>
         </a>
-        <div className='flex gap-8'>
-          <a href='./'>Home</a>
-          <a href='./'>Trade</a>
-          <a href='./'>Portfolio</a>
-          <a href='./'>About</a>
-        </div>
+        <MenuBar/>
         <div>
           <Right/>
         </div>
