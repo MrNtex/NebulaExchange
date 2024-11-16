@@ -5,7 +5,7 @@ import Tile from './Tile'
 import CryptoBox from './CryptoBox'
 import { Skeleton } from './ui/skeleton';
 import MarketCap from './MarketCap';
-import { Coin } from '@/types/types';
+import { Coin } from '@/types/coins';
 
 
 

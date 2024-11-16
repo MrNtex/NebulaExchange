@@ -3,7 +3,8 @@ import Tile from './Tile'
 import ChangeMarker from './ChangeMarker';
 import { formatNumber, roundTo } from '@/lib/numberUtils';
 import { StackedProgressBar } from './StackedBarChart';
-import { Coin } from '@/types/types';
+import { Coin } from '@/types/coins';
+import { Skeleton } from './ui/skeleton';
 
 interface MarketCapInfo {
   total_market_cap: {
@@ -14,8 +15,10 @@ interface MarketCapInfo {
 
 export default function MarketCap({ topCoins }: { topCoins: Coin[] }) {
   const [marketcap, setMarketCap] = useState<MarketCapInfo>();
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setLoading(true);
     const fetchMarketCap = async () => {
       try{
         const data = await fetch('https://api.coingecko.com/api/v3/global');
@@ -27,13 +30,30 @@ export default function MarketCap({ topCoins }: { topCoins: Coin[] }) {
       } catch (error) {
         console.log('Error fetching data', error)
       }
+      finally {
+        setLoading(false);
+      }
     };
     fetchMarketCap();
   }, []);
 
-  if (!topCoins || marketcap === undefined) {
-    console
-    return null;
+  if(loading || !marketcap || !topCoins) {
+    return (
+      <Tile title='Market Cap' className='p-3 pl-8'>
+        <div className='items-center justify-between'>
+          <Skeleton className="h-[40px] w-[300px] rounded-xl" />
+          <div className='flex gap-2 pt-8'>
+            <Skeleton className='w-20 h-6  rounded-xl' />
+            <Skeleton className='w-20 h-6  rounded-xl' />
+            <Skeleton className='w-20 h-6 rounded-xl' />
+          </div>
+        </div>
+      </Tile>
+    )
+  }
+
+  if (topCoins && marketcap) {  
+    console.log('Market Cap:', marketcap);
   }
 
   const segments = [
