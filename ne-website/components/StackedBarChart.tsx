@@ -8,8 +8,6 @@ export interface StackedProgressBarSegment {
 export const StackedProgressBar = ({ segments }: { segments: StackedProgressBarSegment[] }) => {
   const totalPercentage = segments.reduce((acc, segment) => acc + segment.percentage, 0);
 
-  console.log("SPB:", segments);
-
   if (totalPercentage > 100) {
     console.error("Total percentage exceeds 100%");
   }

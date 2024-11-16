@@ -18,14 +18,14 @@ async function getData(): Promise<Coin[]> {
 
 export default function CoinsTable() {
   const [coins, setCoins] = useState<Coin[]>([]);
-
+  const [page, setPage] = useState(1);
   useEffect(() => {
     const fetchCoins = async () => {
       const data = await getData();
       setCoins(data);
     }
     fetchCoins();
-  }, []);
+  }, [page]);
 
   return (
     <div className="container mx-auto py-10">

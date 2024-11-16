@@ -8,7 +8,6 @@ import MarketCap from './MarketCap';
 import { Coin } from '@/types/coins';
 
 
-
 export default function MainPageHeader() {
   const [cryptoPrices, setCryptoPrices] = React.useState<Coin[][]>([])
   const [loading, setLoading] = React.useState<boolean>(true)
@@ -27,6 +26,9 @@ export default function MainPageHeader() {
         // Set the state with the array of data fetched
         setCryptoPrices([marketCapData, volumeData, geckoData]);
       }
+      else {
+        console.log('Error fetching data')
+      }
       setLoading(false);
     };
     fetchData();
@@ -38,6 +40,9 @@ export default function MainPageHeader() {
   
     try {
       const data = await fetch(`http://localhost:5134/api/coins/${order}`);
+      if (!data.ok) {
+        throw new Error('Failed to fetch data');
+      }
       return data.json() as Promise<Coin[]>;
     } catch (error) {
       console.log('Error fetching data', error)
@@ -75,7 +80,8 @@ export default function MainPageHeader() {
       <Tile title='🔥 Trending' className='min-w-80'>
         <ListCoinsInBox idx={2} />
       </Tile>
-      <MarketCap topCoins={cryptoPrices[0]?.slice(0,3)}/>
+
+      <MarketCap topCoins={cryptoPrices}/>
     </div>
   )
 }

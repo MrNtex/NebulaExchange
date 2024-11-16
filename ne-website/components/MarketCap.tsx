@@ -13,7 +13,7 @@ interface MarketCapInfo {
   market_cap_change_percentage_24h_usd: number;
 }
 
-export default function MarketCap({ topCoins }: { topCoins: Coin[] }) {
+export default function MarketCap({ topCoins }: { topCoins: Coin[][] }) {
   const [marketcap, setMarketCap] = useState<MarketCapInfo>();
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -37,7 +37,7 @@ export default function MarketCap({ topCoins }: { topCoins: Coin[] }) {
     fetchMarketCap();
   }, []);
 
-  if(loading || !marketcap || !topCoins) {
+  if(loading || !marketcap || !topCoins || !Array.isArray(topCoins[0]) ||topCoins[0].length < 3) {
     return (
       <Tile title='Market Cap' className='p-3 pl-8'>
         <div className='items-center justify-between'>
@@ -52,14 +52,12 @@ export default function MarketCap({ topCoins }: { topCoins: Coin[] }) {
     )
   }
 
-  if (topCoins && marketcap) {  
-    console.log('Market Cap:', marketcap);
-  }
+  let topThreeCoins = topCoins[0].slice(0, 3);
 
   const segments = [
-    { color: 'orange', percentage: topCoins[0].market_cap / marketcap.total_market_cap.usd * 100 },
-    { color: 'blue', percentage: topCoins[1].market_cap / marketcap.total_market_cap.usd * 100 },
-    { color: 'aqua', percentage: topCoins[2].market_cap / marketcap.total_market_cap.usd * 100 },
+    { color: 'orange', percentage: topThreeCoins[0].market_cap / marketcap.total_market_cap.usd * 100 },
+    { color: 'blue', percentage: topThreeCoins[1].market_cap / marketcap.total_market_cap.usd * 100 },
+    { color: 'aqua', percentage: topThreeCoins[2].market_cap / marketcap.total_market_cap.usd * 100 },
   ];
 
   const coinBadge = (coin: Coin) => (
@@ -77,9 +75,9 @@ export default function MarketCap({ topCoins }: { topCoins: Coin[] }) {
       </div>
       <h1 className='font-semibold py-2'>Dominance</h1>
       <div className='flex gap-2 pb-2'>
-        {coinBadge(topCoins[0])}
-        {coinBadge(topCoins[1])}
-        {coinBadge(topCoins[2])}
+        {coinBadge(topThreeCoins[0])}
+        {coinBadge(topThreeCoins[1])}
+        {coinBadge(topThreeCoins[2])}
       </div>
       
       <StackedProgressBar segments={segments} />

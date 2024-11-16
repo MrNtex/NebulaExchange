@@ -45,7 +45,7 @@ namespace CoinGeckoAPI.Controllers
 
             var coins = coinService.GetCoins(); 
 
-            return Ok(SelectCoins(coins, limit, page));
+            return SelectCoins(coins, limit, page);
         }
 
         // GET: api/coins/marketcap
@@ -54,7 +54,7 @@ namespace CoinGeckoAPI.Controllers
         {
             var coins = CoinGrouping.byMarketCap;
 
-            return Ok(SelectCoins(coins, limit, page));
+            return SelectCoins(coins, limit, page);
         }
 
         // GET: api/coins/volume
@@ -63,7 +63,7 @@ namespace CoinGeckoAPI.Controllers
         {
             var coins = CoinGrouping.byVolume;
             
-            return Ok(SelectCoins(coins, limit, page));
+            return SelectCoins(coins, limit, page);
         }
 
         // GET: api/coins/pricechange
@@ -72,7 +72,7 @@ namespace CoinGeckoAPI.Controllers
         {
             var coins = CoinGrouping.byPriceChange;
             
-            return Ok(SelectCoins(coins, limit, page));
+            return SelectCoins(coins, limit, page);
         }
     }
 }
