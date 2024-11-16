@@ -25,7 +25,7 @@ export default function Header() {
   }
 
   return (
-    <div className='w-full top-0 fixed bg-black flex justify-between'>
+    <div className='w-full top-0 bg-black flex justify-between'>
         <a href='./' className='flex items-center justify-center'>
             <Image src='/Nebula_exchange_logo.png' alt='logo' width={50} height={50} />
             <div>
