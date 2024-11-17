@@ -1,6 +1,11 @@
 'use client'
 
+import { CryptoChart } from "@/components/charts/line-chart";
 import { useParams } from "next/navigation";
+
+type CoinInfoAdvanced = {
+
+}
 const Post = () => {
   const params = useParams();
   const pid = params.CoinId;
@@ -8,7 +13,13 @@ const Post = () => {
 
   const coinId = pid[0];
 
-  return <p>Post: {coinId}</p>
+
+
+  return (
+    <div>
+      <CryptoChart coin={coinId} />
+    </div>
+  )
 }
 
 export default Post

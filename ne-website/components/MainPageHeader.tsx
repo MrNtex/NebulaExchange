@@ -60,7 +60,7 @@ export default function MainPageHeader() {
     return (
       <>
         {cryptoPrices[idx]?.map((coin) => (
-          <CryptoBox key={coin.id} tag={coin.symbol} image={coin.image} currentPrice={coin.current_price} change={coin.price_change_percentage_24h} />
+          <CryptoBox key={coin.id} tag={coin.symbol} image={coin.image} currentPrice={coin.current_price} change={coin.price_change_percentage_24h} id={coin.id}/>
         ))}
       </>
     )

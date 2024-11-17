@@ -5,6 +5,7 @@ import ChangeMarker from './ChangeMarker'
 
 interface CryptoBoxProps {
   tag: string
+  id: string
   image: string
   currentPrice: number
   change: number
@@ -12,7 +13,7 @@ interface CryptoBoxProps {
 
 export default function CryptoBox(props: CryptoBoxProps) {
   return (
-    <a href={`/coin/${props.tag}`} 
+    <a href={`/coin/${props.id}`} 
       className='flex items-center justify-between px-4 py-1 hover:py-2 bg-black bg-opacity-0 hover:bg-opacity-60 transition-bg-opacity ease-in-out duration-300'
     >
       <div className='flex items-center'>
