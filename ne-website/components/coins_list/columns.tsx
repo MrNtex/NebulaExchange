@@ -23,7 +23,7 @@ export const columns: ColumnDef<Coin>[] = [
     header: 'Name',
     cell: (row) => {
       return (
-        <div className="flex items-center">
+        <a className="flex items-center" href={`./coin/${row.row.original.id}`}>
           <Image
             src={row.row.original.image}
             alt={row.row.original.name}
@@ -35,7 +35,7 @@ export const columns: ColumnDef<Coin>[] = [
           <div className="ml-2 flex items-center">
             <span className="text-gray-400 text-xs">{row.row.original.symbol.toUpperCase()}</span>
           </div>
-        </div>
+        </a>
       )
     }
   },

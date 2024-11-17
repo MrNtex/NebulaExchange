@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { Bitcoin, FlaskConical } from 'lucide-react';
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -57,7 +58,10 @@ export function MenuBar() {
     <NavigationMenu>
       <NavigationMenuList>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Getting started</NavigationMenuTrigger>
+          <NavigationMenuTrigger className='flex gap-2 items-center'>
+            <Bitcoin size={14}/>
+            Cryptocurrencies
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr] z-50">
               <li className="row-span-3">
@@ -90,7 +94,10 @@ export function MenuBar() {
           </NavigationMenuContent>
         </NavigationMenuItem>
         <NavigationMenuItem>
-          <NavigationMenuTrigger>Components</NavigationMenuTrigger>
+          <NavigationMenuTrigger className='flex gap-2 items-center'>
+            <FlaskConical size={14}/>
+            Labs
+          </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
               {components.map((component) => (

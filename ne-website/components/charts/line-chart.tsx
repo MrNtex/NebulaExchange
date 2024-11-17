@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { TrendingUp } from "lucide-react";
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, ReferenceLine, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -17,15 +17,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { Skeleton } from "../ui/skeleton";
+import { roundTo } from "@/lib/numberUtils";
 
-const chartData = [
-  { month: "January", desktop: 186 },
-  { month: "February", desktop: 305 },
-  { month: "March", desktop: 237 },
-  { month: "April", desktop: 73 },
-  { month: "May", desktop: 209 },
-  { month: "June", desktop: 214 },
-];
 
 const chartConfig = {
   desktop: {
@@ -43,7 +36,7 @@ const getPrices = async (coin: string) => {
 
   try {
     const data = await fetch(
-      `https://api.coingecko.com/api/v3/coins/${coin}/market_chart?vs_currency=usd&days=1`
+      `https://api.coingecko.com/api/v3/coins/${coin}/market_chart?vs_currency=usd&days=30`
     );
     if (!data.ok) {
       throw new Error("Failed to fetch data");
@@ -55,17 +48,18 @@ const getPrices = async (coin: string) => {
   }
 };
 
-function convertToChartData(prices: Array<[number, number]>): Array<{ hour: string; price: number }> {
+function convertToChartData(prices: Array<[number, number]>): Array<{ date: string; price: number }> {
   return prices.map(([timestamp, price]) => {
+    const dateObj = new Date(timestamp); // Convert the timestamp to milliseconds
     return {
-      hour: new Date(timestamp * 1000).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), // Convert timestamp to "HH:mm"
+      date: dateObj.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }), // "MMM dd, HH:mm"
       price,
     };
   });
 }
 
 export function CryptoChart({ coin }: CryptoChartProps) {
-  const [pricesData, setPricesData] = useState<Array<{ hour: string; price: number }>>([]);
+  const [pricesData, setPricesData] = useState<Array<{ date: string; price: number }>>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [days, setDays] = useState<number>(1);
 
@@ -117,7 +111,7 @@ export function CryptoChart({ coin }: CryptoChartProps) {
         >
           <CartesianGrid vertical={false} />
           <XAxis
-            dataKey="hour"
+            dataKey="date"
             tickLine={false}
             axisLine={false}
             tickMargin={8}
@@ -130,7 +124,8 @@ export function CryptoChart({ coin }: CryptoChartProps) {
           />
           <ChartTooltip
             cursor={false}
-            content={<ChartTooltipContent indicator="dot" hideLabel />}
+            label={true}
+            content={<ChartTooltipContent indicator="dot" />}
           />
           <Area
             dataKey="price"
@@ -138,6 +133,31 @@ export function CryptoChart({ coin }: CryptoChartProps) {
             fill="var(--color-desktop)"
             fillOpacity={0.4}
             stroke="var(--color-desktop)"
+          />
+          <ReferenceLine
+            y={maxPrice}
+            stroke="green"
+            opacity={0.2}
+            strokeWidth={2}
+            label={{
+              value: `Peak: $${roundTo(maxPrice,2)}`,
+              position: "left",
+              offset: 10,
+              fill: "green",
+            }}
+          />
+          <ReferenceLine
+            y={minPrice}
+            stroke="red"
+            opacity={0.2}
+            strokeWidth={2}
+            label={{
+              value: `Dip: $${roundTo(minPrice,2)}`,
+              position: "left",   // Place the label on the left
+              offset: 20,         // Adjust the offset for spacing
+              fill: "red",        // Color the label
+              textAnchor: "middle", // Center align the label text
+            }}
           />
         </AreaChart>
       </ChartContainer>
