@@ -7,10 +7,28 @@ interface ChangeMarkerProps {
 }
 
 export default function ChangeMarker({ change, color, className }: ChangeMarkerProps) {
-  return (
-    <div className={`flex gap-1 ${className}`}>
-      {change > 0 ? <p className='text-green-500'>▲</p> : <p className='text-red-500'>▼</p>}
-      <p className={`${color ? (change > 0 ? 'text-green-500' : 'text-red-500') : ''}`}>{change}%</p>
-    </div>
-  )
+  if (change > 0) {
+    return (
+      <div className={`flex gap-1 ${className}`}>
+        <p className='text-green-500'>▲</p>
+        <p className='text-green-500'>{change}%</p>
+      </div>
+    )
+  }
+  else if (change < 0) {
+    return (
+      <div className={`flex gap-1 ${className}`}>
+        <p className='text-red-500'>▼</p>
+        <p className='text-red-500'>{change}%</p>
+      </div>
+    )
+  }
+  else {
+    return (
+      <div className={`flex gap-1 ${className}`}>
+        <p className='text-gray-500'>=</p>
+        <p className='text-gray-500'>{change}%</p>
+      </div>
+    )
+  }
 }
