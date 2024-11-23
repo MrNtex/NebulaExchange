@@ -1,0 +1,21 @@
+# Use the official .NET runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+# Use the official .NET SDK image for build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY . .
+RUN dotnet restore
+RUN dotnet publish -c Release -o /app
+
+# Final stage
+FROM base AS final
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "ne-backend.dll"]
+EXPOSE 80
+
+
+HEALTHCHECK CMD curl --fail http://localhost:5000/ || exit 1

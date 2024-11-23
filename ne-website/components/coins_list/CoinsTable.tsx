@@ -7,7 +7,7 @@ import { columns } from './columns';
 
 async function getData(): Promise<Coin[]> {
   try {
-    const data = await fetch(`http://localhost:5134/api/coins/marketcap?limit=100`);
+    const data = await fetch(`http://localhost:5000/api/coins/marketcap?limit=100`);
     return data.json() as Promise<Coin[]>;
   } catch (error) {
     console.log('Error fetching data', error);

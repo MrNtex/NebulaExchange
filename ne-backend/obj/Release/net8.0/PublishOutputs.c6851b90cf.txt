@@ -1,0 +1,14 @@
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\ne-backend.exe
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\appsettings.Development.json
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\appsettings.json
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\ne-backend.dll
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\ne-backend.deps.json
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\ne-backend.runtimeconfig.json
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\ne-backend.pdb
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\Microsoft.OpenApi.dll
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\Pipelines.Sockets.Unofficial.dll
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\StackExchange.Redis.dll
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Release\net8.0\publish\Swashbuckle.AspNetCore.SwaggerUI.dll

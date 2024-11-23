@@ -32,3 +32,5 @@ C:\Users\ntexy\Documents\NebulaExchange\ne-backend\obj\Debug\net8.0\refint\ne-ba
 C:\Users\ntexy\Documents\NebulaExchange\ne-backend\obj\Debug\net8.0\ne-backend.pdb
 C:\Users\ntexy\Documents\NebulaExchange\ne-backend\obj\Debug\net8.0\ne-backend.genruntimeconfig.cache
 C:\Users\ntexy\Documents\NebulaExchange\ne-backend\obj\Debug\net8.0\ref\ne-backend.dll
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+C:\Users\ntexy\Documents\NebulaExchange\ne-backend\bin\Debug\net8.0\StackExchange.Redis.dll

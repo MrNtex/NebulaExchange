@@ -1,0 +1,26 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80" # Expose your app on localhost:5000
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80 # Ensure the app binds to port 80 in the container
+    depends_on:
+      - redis # Ensure Redis starts before the app
+    networks:
+      - app-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379" # Expose Redis
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -3,7 +3,7 @@ import React from 'react';
 
 export default async function Page() {
   // Fetch data directly inside the server component
-  const response = await fetch('https://localhost:5001/api/coins');
+  const response = await fetch('https://localhost:5000/api/coins');
   const coins = await response.json();
 
   return (
