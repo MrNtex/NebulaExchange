@@ -1,78 +1,57 @@
+using CoinApi.Services;
 using CoinGeckoAPI.Shared.Scripts;
 using CoinGeckoAPI.Shared.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace CoinGeckoAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class CoinsController : ControllerBase
+    [Route("api/coin")]
+    public class CoinController : ControllerBase
     {
-        private readonly CoinService coinService;
+        private readonly HttpClient _httpClient;
+        private readonly RedisCacheService _redisCacheService;
 
-        public CoinsController(CoinService coinService)
+        public CoinController(IHttpClientFactory httpClientFactory, RedisCacheService redisCacheService)
         {
-            this.coinService = coinService;
+          _httpClient = httpClientFactory.CreateClient();
+          _redisCacheService = redisCacheService;
         }
 
-        IActionResult SelectCoins(List<Shared.BackgroundServices.Coin> coins, int limit, int page)
+        // GET: api/coin/{id}
+        [HttpGet("{coinName}")]
+        public async Task<IActionResult> GetCoin(string coinName)
         {
-            List<Shared.BackgroundServices.Coin> paginatedCoins;
-            if (coins == null || coins.Count == 0)
+          return Ok(new { Message = "This endpoint is not implemented yet." });
+          string redisKey = $"coin:{coinName.ToLower()}";
+          var coinData = await _redisCacheService.GetDataAsync<object>(redisKey);
+
+          if (coinData != null)
+          {
+            return Ok(new { Source = "Redis", Data = coinData });
+          }
+
+          try
+          {
+            var response = await _httpClient.GetAsync($"https://api.coingecko.com/api/v3/coins/{coinName}");
+            if (!response.IsSuccessStatusCode)
             {
-                return NotFound("No coins found.");
+              return NotFound(new { Message = "Coin not found on CoinGecko." });
             }
 
-            if (page < 1)
-            {
-                return BadRequest("Page number must be greater than 0.");
-            }
-            if (limit < 1)
-            {
-                return BadRequest("Limit must be greater than 0.");
-            }
+            var coinDataFromApi = await response.Content.ReadAsStringAsync();
+            var coinJson = JsonSerializer.Deserialize<object>(coinDataFromApi);
 
-            paginatedCoins = coins.Skip(limit * (page - 1)).Take(limit).ToList();
-            return Ok(paginatedCoins);
-        }
-        // GET: api/coins
-        [HttpGet]
-        public IActionResult GetCoins([FromQuery] int limit = 3, [FromQuery] int page = 1)
-        {
-            // limit the number of coins returned
-            // page is dempended on the limit, 
-            // if the limit is 3, then page 1 will return the first 3 coins, page 2 will return the next 3 coins, and so on
+            // Cache the response in Redis for 5 minutes
+            await _redisCacheService.SetDataAsync(redisKey, coinJson, TimeSpan.FromMinutes(5));
 
-            var coins = coinService.GetCoins(); 
-
-            return SelectCoins(coins, limit, page);
-        }
-
-        // GET: api/coins/marketcap
-        [HttpGet("marketcap")]
-        public IActionResult GetCoinsByMarketCap([FromQuery] int limit = 3, [FromQuery] int page = 1)
-        {
-            var coins = CoinGrouping.byMarketCap;
-
-            return SelectCoins(coins, limit, page);
-        }
-
-        // GET: api/coins/volume
-        [HttpGet("volume")]
-        public IActionResult GetCoinsByVolume([FromQuery] int limit = 3, [FromQuery] int page = 1)
-        {
-            var coins = CoinGrouping.byVolume;
-            
-            return SelectCoins(coins, limit, page);
-        }
-
-        // GET: api/coins/pricechange
-        [HttpGet("pricechange")]
-        public IActionResult GetCoinsByPriceChange([FromQuery] int limit = 3, [FromQuery] int page = 1)
-        {
-            var coins = CoinGrouping.byPriceChange;
-            
-            return SelectCoins(coins, limit, page);
+            return Ok(new { Source = "CoinGecko", Data = coinJson });
+          }
+          catch (Exception ex)
+          {
+            return StatusCode(500, new { Message = "Error contacting CoinGecko.", Error = ex.Message });
+          }
         }
     }
 }

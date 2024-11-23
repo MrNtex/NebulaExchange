@@ -45,6 +45,9 @@ var app = builder.Build();
 
 app.UseCors("AllowNextJs");
 
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.MapControllers();
 app.Run();
