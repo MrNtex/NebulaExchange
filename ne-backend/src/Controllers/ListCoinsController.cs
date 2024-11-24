@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CoinGeckoAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/test")]
     public class ListCoinsController : ControllerBase
     {
         private readonly CoinService coinService;

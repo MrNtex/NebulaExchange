@@ -13,6 +13,7 @@ public class RedisService : IRedisService
     /// <param name="connectionString">The connection string for the Redis server.</param>
     public RedisService(string connectionString)
     {
+        Console.WriteLine($"Redis connection string: {connectionString}");
         var redis = ConnectionMultiplexer.Connect(connectionString);
         _db = redis.GetDatabase();
     }

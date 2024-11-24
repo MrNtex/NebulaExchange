@@ -1,5 +1,6 @@
 using CoinGeckoAPI.Shared.BackgroundServices;
 using CoinGeckoAPI.Shared.Services;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,16 +20,26 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddHttpClient("RedisCacheClient", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:6379/");
+});
+
 // Add Redis service to the DI container
-builder.Services.AddSingleton<IRedisService>(sp =>
+// RedisService setup without HttpClient
+builder.Services.AddSingleton<IRedisService, RedisService>(sp =>
 {
     var connectionString = builder.Configuration["Redis:ConnectionString"];
+    
     if (string.IsNullOrEmpty(connectionString))
     {
         throw new ArgumentNullException(nameof(connectionString), "Redis connection string cannot be null or empty.");
     }
+
     return new RedisService(connectionString);
 });
+
+
 
 //builder.Services.AddSingleton<CoinService>();
 // Register CoinDataBackgroundService to start background fetching immediately
@@ -40,7 +51,7 @@ builder.WebHost.ConfigureKestrel(options =>
 {
     options.ListenAnyIP(80);  // Listen on all interfaces on port 80
 });
-
+builder.Services.AddLogging();
 var app = builder.Build();
 
 app.UseCors("AllowNextJs");
