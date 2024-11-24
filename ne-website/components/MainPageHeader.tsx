@@ -39,7 +39,7 @@ export default function MainPageHeader() {
     console.log('Fetching data from server for order', order)
   
     try {
-      const data = await fetch(`http://localhost:5000/api/coins/${order}`);
+      const data = await fetch(`http://localhost:5000/api/listcoins/${order}`);
       if (!data.ok) {
         throw new Error('Failed to fetch data');
       }
