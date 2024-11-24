@@ -45,8 +45,8 @@ namespace CoinGeckoAPI.Controllers
             // page is dempended on the limit, 
             // if the limit is 3, then page 1 will return the first 3 coins, page 2 will return the next 3 coins, and so on
 
-            var coins = coinService.GetCoins(); 
-
+            var coins = CoinGrouping.byMarketCap;
+            
             return SelectCoins(coins, limit, page);
         }
 

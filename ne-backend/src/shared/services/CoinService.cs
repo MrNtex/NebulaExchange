@@ -16,10 +16,5 @@ namespace CoinGeckoAPI.Shared.Services
         this.httpClient = httpClient;
     }
 
-    // Serve the cached data
-    public List<BackgroundServices.Coin> GetCoins()
-    {
-        return BackgroundServices.CoinDataBackgroundService.coins;
-    }
 }
 }

@@ -26,7 +26,7 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
     private readonly HttpClient httpClient;
     private readonly IRedisService _redisCacheService;
 
-    public static List<Coin> coins = new List<Coin>();
+    public static Coin[] coins = new Coin[3750];
     public CoinDataBackgroundService(CoinService coinService, HttpClient httpClient, IRedisService _redisCacheService)
     {
         this.coinService = coinService;
@@ -64,15 +64,27 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
           var response = await httpClient.GetAsync($"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page={MAX_COINS}&page={currentPage+i}");
           if (response.IsSuccessStatusCode)
           {
-            var fetchedCoins = await response.Content.ReadFromJsonAsync<List<Coin>>() ?? new List<Coin>();
-            coins.AddRange(fetchedCoins);
+            currentPage++;
 
-            var redisKey = $"coins_data_{currentPage+i}";
+            var fetchedCoins = await response.Content.ReadFromJsonAsync<Coin[]>() ?? new Coin[250];
+            for (int j = 0; j < fetchedCoins.Length; j++)
+            {
+              coins[currentPage * MAX_COINS + j] = fetchedCoins[j];
 
-            // After collecting all the data, serialize it and store it in Redis
-            var jsonData = JsonSerializer.Serialize(coins);
-            await _redisCacheService.SetValueAsync("coins_data", jsonData);  // Store the data in Redis with key "coins_data"
-            Console.WriteLine($"Coin data for page {currentPage+i} successfully stored in Redis.");
+              try
+              {
+                var redisKey = $"coin_data_{ fetchedCoins[j].id }";
+                var jsonData = JsonSerializer.Serialize(fetchedCoins[j]);
+                await _redisCacheService.SetValueAsync(redisKey, jsonData);
+              }
+              catch (Exception ex)
+              {
+                Console.WriteLine($"Error storing coin data in Redis: {ex.Message}");
+              }
+              
+            }
+            Console.WriteLine($"Coin data for page {currentPage} successfully stored in Redis.");
+            
           }
           else
           {
@@ -81,11 +93,9 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
           }
         }
 
-        currentPage += MAX_PAGES_PER_FETCH;
         if (currentPage >= MAX_PAGES)
         {
           currentPage = 0;
-          coins.Clear();
         }
       }
       catch (Exception ex)
