@@ -2,6 +2,7 @@ using CoinGeckoAPI.Shared.Scripts;
 using CoinGeckoAPI.Shared.Services;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -23,12 +24,14 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
     private readonly CoinService coinService;
     private Timer? timer;
     private readonly HttpClient httpClient;
+    private readonly IRedisService _redisCacheService;
 
     public static List<Coin> coins = new List<Coin>();
-    public CoinDataBackgroundService(CoinService coinService, HttpClient httpClient)
+    public CoinDataBackgroundService(CoinService coinService, HttpClient httpClient, IRedisService _redisCacheService)
     {
         this.coinService = coinService;
         this.httpClient = httpClient;
+        this._redisCacheService = _redisCacheService;
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
@@ -38,7 +41,7 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
             async _ => await FetchCoinData(), // Fetch data every 5 minutes
             null,
             TimeSpan.Zero,
-            TimeSpan.FromMinutes(5)
+            TimeSpan.FromMinutes(2)
         );
 
         Console.WriteLine("CoinDataBackgroundService started.");
@@ -47,19 +50,29 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
     }
 
   const int MAX_COINS = 250;
-  const int MAX_PAGES = 3;
+  const int MAX_PAGES_PER_FETCH = 3;
+  const int MAX_PAGES = 15;
+  static int currentPage = 0; // Keep track of the current page
     private async Task FetchCoinData()
     {
-      coins.Clear();
+      
       httpClient.DefaultRequestHeaders.UserAgent.ParseAdd("NebulaExchange/2.0");
       try
       {
-        for (int i = 1; i <= MAX_PAGES; i++)
+        for (int i = 1; i <= MAX_PAGES_PER_FETCH; i++)
         {
-          var response = await httpClient.GetAsync($"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page={MAX_COINS}&page={i}");
+          var response = await httpClient.GetAsync($"https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page={MAX_COINS}&page={currentPage+i}");
           if (response.IsSuccessStatusCode)
           {
-            coins.AddRange(await response.Content.ReadFromJsonAsync<List<Coin>>() ?? new List<Coin>());
+            var fetchedCoins = await response.Content.ReadFromJsonAsync<List<Coin>>() ?? new List<Coin>();
+            coins.AddRange(fetchedCoins);
+
+            var redisKey = $"coins_data_{currentPage+i}";
+
+            // After collecting all the data, serialize it and store it in Redis
+            var jsonData = JsonSerializer.Serialize(coins);
+            await _redisCacheService.SetValueAsync("coins_data", jsonData);  // Store the data in Redis with key "coins_data"
+            Console.WriteLine($"Coin data for page {currentPage+i} successfully stored in Redis.");
           }
           else
           {
@@ -67,7 +80,13 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
             Console.WriteLine($"Error fetching coin data: {responseBody}");
           }
         }
-        
+
+        currentPage += MAX_PAGES_PER_FETCH;
+        if (currentPage >= MAX_PAGES)
+        {
+          currentPage = 0;
+          coins.Clear();
+        }
       }
       catch (Exception ex)
       {
@@ -76,7 +95,6 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
       finally
       {
         CoinGrouping.GroupCoins(coins);
-        Console.WriteLine($"{DateTime.Now}: Fetched {coins.Count} coins.");
       }
     }
 

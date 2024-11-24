@@ -9,10 +9,12 @@ namespace CoinGeckoAPI.Controllers
     public class ListCoinsController : ControllerBase
     {
         private readonly CoinService coinService;
+        private readonly IRedisService redisService;
 
-        public ListCoinsController(CoinService coinService)
+        public ListCoinsController(CoinService coinService, IRedisService redisService)
         {
             this.coinService = coinService;
+            this.redisService = redisService;
         }
 
         IActionResult SelectCoins(List<Shared.BackgroundServices.Coin> coins, int limit, int page)
