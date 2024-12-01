@@ -37,11 +37,7 @@ public class Ticker
     public decimal? Last { get; set; }
     public decimal? Volume { get; set; }
 
-    [JsonPropertyName("converted_last")]
-    public Currencies? ConvertedLast { get; set; }
-    [JsonPropertyName("converted_volume")]
-    public Currencies? ConvertedVolume { get; set; }
-
+    
     [JsonPropertyName("trust_score")]
     public string? TrustScore { get; set; }
     [JsonPropertyName("bid_ask_spread_percentage")]
