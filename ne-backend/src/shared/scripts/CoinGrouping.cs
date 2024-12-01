@@ -6,10 +6,10 @@ namespace CoinGeckoAPI.Shared.Scripts
 {
     public class CoinGrouping
     {
-        public static List<Coin> byMarketCap = new List<Coin>();
-        public static List<Coin> byVolume = new List<Coin>();
-        public static List<Coin> byPriceChange = new List<Coin>();
-        public static void GroupCoins(Coin[] coins)
+        public static List<CoinSimple> byMarketCap = new List<CoinSimple>();
+        public static List<CoinSimple> byVolume = new List<CoinSimple>();
+        public static List<CoinSimple> byPriceChange = new List<CoinSimple>();
+        public static void GroupCoins(CoinSimple[] coins)
         {
           if (coins == null || coins.Length == 0)
           {

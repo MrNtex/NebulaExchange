@@ -14,7 +14,7 @@ namespace CoinGeckoAPI.Shared.Services {
             _redisDatabase = redisDatabase;
         }
 
-        public async Task<Coin?> GetCoinAsync(string coinId)
+        public async Task<CoinAdvanced?> GetCoinAsync(string coinId)
         {
             // Check Redis cache first
             string redisKey = $"coin:{coinId}";
@@ -22,7 +22,7 @@ namespace CoinGeckoAPI.Shared.Services {
             
             if (!string.IsNullOrEmpty(cachedCoin))
             {
-                return JsonSerializer.Deserialize<Coin>(cachedCoin);
+                return JsonSerializer.Deserialize<CoinAdvanced>(cachedCoin);
             }
 
             // Fetch from external API
@@ -32,11 +32,7 @@ namespace CoinGeckoAPI.Shared.Services {
                 throw new Exception($"Failed to fetch coin data for {coinId}");
             }
 
-            string responseContent = await response.Content.ReadAsStringAsync();
-            Coin? coin = JsonSerializer.Deserialize<Coin>(responseContent, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
+            CoinAdvanced? coin = await response.Content.ReadFromJsonAsync<CoinAdvanced>();
 
             if (coin != null)
             {

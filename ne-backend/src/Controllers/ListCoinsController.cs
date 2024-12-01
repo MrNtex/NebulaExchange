@@ -17,9 +17,9 @@ namespace CoinGeckoAPI.Controllers
             this.redisService = redisService;
         }
 
-        IActionResult SelectCoins(List<Coin> coins, int limit, int page)
+        IActionResult SelectCoins(List<CoinSimple> coins, int limit, int page)
         {
-            List<Coin> paginatedCoins;
+            List<CoinSimple> paginatedCoins;
             if (coins == null || coins.Count == 0)
             {
                 return NotFound("No coins found.");

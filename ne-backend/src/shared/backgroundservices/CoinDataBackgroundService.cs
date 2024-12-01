@@ -16,7 +16,7 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
     private readonly HttpClient httpClient;
     private readonly IRedisService _redisCacheService;
 
-    public static Coin[] coins = new Coin[3750];
+    public static CoinSimple[] coins = new CoinSimple[3750];
     public CoinDataBackgroundService(CoinService coinService, HttpClient httpClient, IRedisService _redisCacheService)
     {
         this.coinService = coinService;
@@ -56,7 +56,7 @@ namespace CoinGeckoAPI.Shared.BackgroundServices
           {
             currentPage++;
 
-            var fetchedCoins = await response.Content.ReadFromJsonAsync<Coin[]>() ?? new Coin[250];
+            var fetchedCoins = await response.Content.ReadFromJsonAsync<CoinSimple[]>() ?? new CoinSimple[250];
             for (int j = 0; j < fetchedCoins.Length; j++)
             {
               coins[currentPage * MAX_COINS + j] = fetchedCoins[j];
