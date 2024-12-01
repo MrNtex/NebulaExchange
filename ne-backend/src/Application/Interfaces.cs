@@ -16,5 +16,5 @@ public interface IRedisService
     /// <param name="key">The key to be added or updated.</param>
     /// <param name="value">The value to associate with the key.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    Task SetValueAsync(string key, string value);
+    Task SetValueAsync(string key, string value, TimeSpan? expiry = null);
 }

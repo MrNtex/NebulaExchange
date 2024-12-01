@@ -32,7 +32,7 @@ public class RedisService : IRedisService
     }
 
     /// <inheritdoc />
-    public async Task SetValueAsync(string key, string value)
+    public async Task SetValueAsync(string key, string value, TimeSpan? expiry = null)
     {
         if (string.IsNullOrEmpty(key))
         {
@@ -45,6 +45,6 @@ public class RedisService : IRedisService
         }
 
         // Store the key-value pair in Redis
-        await _db.StringSetAsync(key, value);
+        await _db.StringSetAsync(key, value, expiry);
     }
 }

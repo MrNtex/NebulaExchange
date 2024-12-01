@@ -8,17 +8,7 @@ using System.Threading.Tasks;
 
 namespace CoinGeckoAPI.Shared.BackgroundServices
 {
-  public class Coin
-  {
-    public string id { get; set; } = string.Empty;
-    public string symbol	 { get; set; } = string.Empty;
-    public string name { get; set; } = string.Empty;
-    public string image { get; set; } = string.Empty;
-    public double? market_cap { get; set; }
-    public double? total_volume { get; set; }
-    public double? price_change_percentage_24h { get; set; }
-    public double? current_price { get; set; }
-  }
+  
   public class CoinDataBackgroundService : IHostedService
   {
     private readonly CoinService coinService;

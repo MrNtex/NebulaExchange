@@ -23,7 +23,7 @@ namespace CoinGeckoAPI.Controllers
         [HttpGet("{coinName}")]
         public IActionResult GetCoin(string coinName)
         {
-          return Ok(new { Message = "This endpoint is not implemented yet." });
+          return Ok(new { Message = $"This endpoint is not implemented yet for {coinName}." });
         }
         
     }

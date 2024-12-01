@@ -4,9 +4,10 @@ import { CryptoChart } from "@/components/charts/line-chart";
 import CoinHeader from "@/components/CoinHeader";
 import { useParams } from "next/navigation";
 
-type CoinInfoAdvanced = {
+interface CoinInfoAdvanced {
 
 }
+
 const Post = () => {
   const params = useParams();
   const pid = params.CoinId;
@@ -14,7 +15,7 @@ const Post = () => {
 
   const coinId = pid[0];
 
-
+  
 
   return (
     <div>
