@@ -22,6 +22,14 @@ namespace CoinGeckoAPI.Controllers
         }
 
         // GET: api/coin/{id}
+        /// <summary>
+        /// Get a specific coin by ID
+        /// </summary>
+        /// <remarks>Returns advanced info</remarks>
+        /// <param name="coinId"></param>
+        /// <response code="200">Returns the coin</response>
+        /// <response code="404">If the coin is not found</response>
+        /// <response code="500">If an error occurs</response>
         [HttpGet("{coinId}")]
         public async Task<IActionResult> GetCoin(string coinId)
         {

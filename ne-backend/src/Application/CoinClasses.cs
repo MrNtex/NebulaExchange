@@ -1,13 +1,13 @@
 using System.Text.Json.Serialization;
 
-public class Coin
+public record Coin
 {
   public string id { get; set; } = string.Empty;
   public string symbol	 { get; set; } = string.Empty;
   public string name { get; set; } = string.Empty;
 }
 
-public class CoinSimple : Coin
+public record CoinSimple : Coin
 {
   // Renamed to avoid collision
   [JsonPropertyName("image")]
@@ -19,7 +19,7 @@ public class CoinSimple : Coin
   public double? current_price { get; set; }
 }
 
-public class Market
+public record Market
 {
     public string? Name { get; set; }
     public string? Identifier { get; set; }
@@ -29,7 +29,7 @@ public class Market
     public bool? HasReferralParams { get; set; }
 }
 
-public class Ticker
+public record Ticker
 {
     public string? Base { get; set; }
     public string? Target { get; set; }
@@ -60,14 +60,14 @@ public class Ticker
     public string? TargetCoinId { get; set; }
 }
 
-public class CoinImage
+public record CoinImage
 {
     public string? Thumb { get; set; }
     public string? Small { get; set; }
     public string? Large { get; set; }
 }
 
-public class CoinAdvanced : Coin
+public record CoinAdvanced : Coin
 {
     [JsonPropertyName("web_slug")]
     public string? WebSlug { get; set; }
@@ -93,18 +93,18 @@ public class CoinAdvanced : Coin
     public MarketData MarketData { get; set; } = new MarketData();
 }
 
-public class DetailPlatform
+public record DetailPlatform
 {
     public int? DecimalPlace { get; set; }
     public string? ContractAddress { get; set; }
 }
 
-public class CoinDescription
+public record CoinDescription
 {
     public string? En { get; set; }
 }
 
-public class MarketData
+public record MarketData
 {
     [JsonPropertyName("current_price")]
     public Currencies? CurrentPrice { get; set; }
@@ -142,7 +142,7 @@ public class MarketData
     public string? LastUpdated { get; set; }
 }
 
-public class Currencies
+public record Currencies
 {
     public decimal? Btc { get; set; }
     public decimal? Eth { get; set; }

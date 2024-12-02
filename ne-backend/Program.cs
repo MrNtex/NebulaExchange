@@ -1,5 +1,6 @@
 using CoinGeckoAPI.Shared.BackgroundServices;
 using CoinGeckoAPI.Shared.Services;
+using Microsoft.OpenApi.Models;
 using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -53,6 +54,14 @@ builder.WebHost.ConfigureKestrel(options =>
     options.ListenAnyIP(80);  // Listen on all interfaces on port 80
 });
 builder.Services.AddLogging();
+
+builder.Services.AddMvc();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "ne_backend", Version = "v1" });
+});
+
 var app = builder.Build();
 
 app.UseCors("AllowNextJs");
@@ -62,4 +71,9 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 app.MapControllers();
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("v1/swagger.json", "My API V1");
+});
 app.Run();

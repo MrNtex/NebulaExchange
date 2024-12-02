@@ -1,8 +1,8 @@
-import { Coin } from '@/types/coins'
+import { Coin, CoinAdvanced } from '@/types/coins'
 import React from 'react'
 import Image from 'next/image'
 
-export default function CoinHeader(coin: Coin) {
+export default function CoinHeader(coin: CoinAdvanced) {
   return (
     <div>
       <div className='flex items-center justify-center'>
