@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/chart";
 import { Skeleton } from "../ui/skeleton";
 import { roundTo } from "@/lib/numberUtils";
+import { useCoin } from "@/context/coinContext";
 
 
 const chartConfig = {
@@ -32,11 +33,11 @@ interface CryptoChartProps {
 }
 
 const getPrices = async (coin: string) => {
-  console.log("Fetching data from server for coin", coin);
+  console.log("Fetching data from server for coin", coin.toLowerCase());
 
   try {
     const data = await fetch(
-      `https://api.coingecko.com/api/v3/coins/${coin}/market_chart?vs_currency=usd&days=30`
+      `https://api.coingecko.com/api/v3/coins/${coin.toLowerCase()}/market_chart?vs_currency=usd&days=30`
     );
     if (!data.ok) {
       throw new Error("Failed to fetch data");
@@ -58,15 +59,17 @@ function convertToChartData(prices: Array<[number, number]>): Array<{ date: stri
   });
 }
 
-export function CryptoChart({ coin }: CryptoChartProps) {
+export function CryptoChart() {
   const [pricesData, setPricesData] = useState<Array<{ date: string; price: number }>>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [days, setDays] = useState<number>(1);
 
+  const { coin } = useCoin();
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const data = await getPrices(coin);
+      const data = await getPrices(coin?.name || "");
 
       if (data) {
         const chartData = convertToChartData(data);

@@ -3,7 +3,7 @@ import Tile from './Tile'
 import ChangeMarker from './ChangeMarker';
 import { formatNumber, roundTo } from '@/lib/numberUtils';
 import { StackedProgressBar } from './StackedBarChart';
-import { Coin } from '@/types/coins';
+import { Coin, CoinSimple } from '@/types/coins';
 import { Skeleton } from './ui/skeleton';
 
 interface MarketCapInfo {
@@ -60,7 +60,7 @@ export default function MarketCap({ topCoins }: { topCoins: Coin[][] }) {
     { color: 'aqua', percentage: topThreeCoins[2].market_cap / marketcap.total_market_cap.usd * 100 },
   ];
 
-  const coinBadge = (coin: Coin) => (
+  const coinBadge = (coin: CoinSimple) => (
     <div className='flex items-center gap-1 bg-zinc-800 p-1 bg-opacity-25 rounded-lg overflow-hidden'>
       <img src={coin.image} alt={coin.name} className='w-4 h-4'/>
       <p className='text-sm'>{roundTo(coin.market_cap / marketcap.total_market_cap.usd * 100,2)}%</p>

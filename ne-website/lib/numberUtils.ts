@@ -5,6 +5,7 @@ export function roundTo(num: number, places: number) {
 
 export function formatNumber(num: number, currency = "USD") {
   const numString = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  currency = currency.toUpperCase();
   if (currency === "USD") {
     return `$${numString}`;
   }
