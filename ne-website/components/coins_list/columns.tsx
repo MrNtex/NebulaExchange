@@ -3,12 +3,12 @@
 import { ColumnDef } from "@tanstack/react-table"
 import Image from 'next/image'
 
-import { Coin } from "@/types/coins"
+import { Coin, CoinSimple } from "@/types/coins"
 import { Crown } from "lucide-react"
 import ChangeMarker from "../ChangeMarker"
 import { formatNumber, roundTo } from "@/lib/numberUtils"
 
-export const columns: ColumnDef<Coin>[] = [
+export const columns: ColumnDef<CoinSimple>[] = [
   {
     accessorKey: 'favButton',
     header: '',

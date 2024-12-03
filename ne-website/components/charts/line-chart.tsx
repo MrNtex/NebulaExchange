@@ -100,6 +100,9 @@ export function CryptoChart() {
   const minPrice = Math.min(...pricesData.map((data) => data.price));
   const maxPrice = Math.max(...pricesData.map((data) => data.price));
 
+  const priceDifference = pricesData[pricesData.length - 1]?.price - pricesData[0]?.price;
+  const isPriceIncreasing = priceDifference >= 0;
+
   const padding = 0.1 * (maxPrice - minPrice); // Add padding to the Y-axis domain
 
   return (
@@ -113,6 +116,21 @@ export function CryptoChart() {
           }}
         >
           <CartesianGrid vertical={false} />
+          <defs>
+            <linearGradient id="price-gradient" x1="0" y1="0" x2="0" y2="1">
+              {isPriceIncreasing ? (
+                <>
+                  <stop offset="0%" stopColor="green" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="green" stopOpacity={0.2} />
+                </>
+              ) : (
+                <>
+                  <stop offset="0%" stopColor="red" stopOpacity={0.8} />
+                  <stop offset="100%" stopColor="red" stopOpacity={0.2} />
+                </>
+              )}
+            </linearGradient>
+          </defs>
           <XAxis
             dataKey="date"
             tickLine={false}
@@ -133,9 +151,10 @@ export function CryptoChart() {
           <Area
             dataKey="price"
             type="linear"
-            fill="var(--color-desktop)"
-            fillOpacity={0.4}
-            stroke="var(--color-desktop)"
+            fill="url(#price-gradient)"
+            fillOpacity={0.8}
+            stroke={isPriceIncreasing ? "green" : "red"}
+            strokeWidth={2}
           />
           <ReferenceLine
             y={maxPrice}
