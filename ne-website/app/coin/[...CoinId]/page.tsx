@@ -57,9 +57,11 @@ const Post = () => {
 const Content = ({ coinInfo }: { coinInfo: CoinAdvanced }) => {
   const { setCoin, coin } = useCoin();
 
-  console.log('Setting coin context...');
-  console.log(coinInfo);
-  setCoin(coinInfo); // Safely update context here
+  useEffect(() => {
+    console.log('Setting coin...');
+    setCoin(coinInfo);
+  }, []);
+
 
   if (coin === null) {
     return <div>Loading...</div>;

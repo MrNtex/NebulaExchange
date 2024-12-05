@@ -9,9 +9,7 @@ import { useCoin } from '@/context/coinContext'
 export default function CoinHeader() {
 
 
-  const coinContext = useCoin();
-  const coin: CoinAdvanced = coinContext.coin as CoinAdvanced;
-  const currency = coinContext.currency;
+  const { coin, currency, setCurrency} = useCoin();
   return (
     <div>
       <div className='flex items-center justify-center gap-2'>
@@ -31,7 +29,7 @@ export default function CoinHeader() {
           <ChangeMarker change={coin.market_data.price_change_percentage_24h_in_currency?.[currency  as keyof typeof coin.market_data.current_price] || 0} className='text-xs text-gray-400 p-1'/>
           
         </div>
-        <CurrencyToggle onSelect={(val) => useCoin().setCurrency(val)}/>
+        <CurrencyToggle onSelect={(val) => setCurrency(val)}/>
         
       </div>
     </div>
