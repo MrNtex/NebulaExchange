@@ -3,12 +3,16 @@ export function roundTo(num: number, places: number) {
   return Math.round(num * factor) / factor;
 }
 
-export function formatNumber(num: number, currency = "USD") {
+export function formatNumber(num: number): string;
+export function formatNumber(num: number, currency: string): string;
+export function formatNumber(num: number, currency?: string): string {
   const numString = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  currency = currency.toUpperCase();
-  if (currency === "USD") {
-    return `$${numString}`;
+  if (currency) {
+    currency = currency.toUpperCase();
+    if (currency === "USD") {
+      return `$${numString}`;
+    }
+    return `${numString} ${currency}`;
   }
-
-  return numString + ` ${currency}`;
+  return numString;
 }

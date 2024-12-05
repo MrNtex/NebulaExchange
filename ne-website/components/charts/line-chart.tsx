@@ -69,7 +69,7 @@ export function CryptoChart() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const data = await getPrices(coin?.name || "");
+      const data = await getPrices(coin?.id || "");
 
       if (data) {
         const chartData = convertToChartData(data);
