@@ -47,5 +47,23 @@ namespace CoinGeckoAPI.Controllers
             return StatusCode(500, new { Error = ex.Message });
           }
         }
+
+        [HttpGet("{coinId}/chart/{days}")]
+        public async Task<IActionResult> GetCoinChart(string coinId, string days)
+        {
+          try
+          {
+            CoinChart? coinChart = await _coinService.GetCoinChartAsync(coinId, days);
+            if (coinChart == null)
+            {
+              return NotFound(new { Message = $"Coin with ID '{coinId}' not found." });
+            }
+            return Ok(coinChart);
+          }
+          catch (Exception ex)
+          {
+            return StatusCode(500, new { Error = ex.Message });
+          }
+        }
     }
 }
