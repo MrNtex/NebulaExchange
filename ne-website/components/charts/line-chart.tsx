@@ -29,7 +29,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 interface CryptoChartProps {
-  coin: string;
+  type: "prices" | "market_caps" | "volumes";
 }
 
 const getPrices = async (coin: string) => {
@@ -59,7 +59,7 @@ function convertToChartData(prices: Array<[number, number]>): Array<{ date: stri
   });
 }
 
-export function CryptoChart() {
+export function CryptoChart({type}: CryptoChartProps) {
   const [pricesData, setPricesData] = useState<Array<{ date: string; price: number }>>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [days, setDays] = useState<number>(1);
@@ -121,12 +121,12 @@ export function CryptoChart() {
               {isPriceIncreasing ? (
                 <>
                   <stop offset="0%" stopColor="green" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="green" stopOpacity={0.2} />
+                  <stop offset="100%" stopColor="green" stopOpacity={0.1} />
                 </>
               ) : (
                 <>
                   <stop offset="0%" stopColor="red" stopOpacity={0.8} />
-                  <stop offset="100%" stopColor="red" stopOpacity={0.2} />
+                  <stop offset="100%" stopColor="red" stopOpacity={0.1} />
                 </>
               )}
             </linearGradient>

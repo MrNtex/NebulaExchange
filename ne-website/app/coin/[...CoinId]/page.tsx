@@ -3,6 +3,7 @@
 import { CryptoChart } from "@/components/charts/line-chart";
 import CoinDetails from "@/components/CoinDetails";
 import CoinHeader from "@/components/CoinHeader";
+import RangeSelect from "@/components/RangeSelect";
 import { coinContext, CoinProvider, useCoin } from "@/context/coinContext";
 import { fetchAdvancedCoinData } from "@/scripts/fetchAdvancedCoinData";
 import { CoinAdvanced } from "@/types/coins";
@@ -75,6 +76,7 @@ const Content = ({ coinInfo }: { coinInfo: CoinAdvanced }) => {
       <div className="w-px bg-gray-300 mx-4"></div>
       <div className="flex-1">
         <CryptoChart />
+        <RangeSelect />
       </div>
     </div>
   );

@@ -5,11 +5,19 @@ import ChangeMarker from './ChangeMarker'
 import { formatNumber } from '@/lib/numberUtils'
 import { CurrencyToggle } from './CurrencyToggle'
 import { useCoin } from '@/context/coinContext'
+import { Skeleton } from './ui/skeleton'
 
 export default function CoinHeader() {
 
 
   const { coin, currency, setCurrency} = useCoin();
+  if (!coin) {
+    return ( 
+    <div>
+      <Skeleton className='w-20 h-20 rounded-full'/>
+    </div>
+    )
+  }
   return (
     <div>
       <div className='flex items-center justify-center gap-2'>
