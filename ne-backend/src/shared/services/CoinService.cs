@@ -58,7 +58,15 @@ namespace CoinGeckoAPI.Shared.Services {
             
             if (!string.IsNullOrEmpty(cachedChart))
             {
-                return JsonSerializer.Deserialize<CoinChart>(cachedChart);
+                try {
+                    return JsonSerializer.Deserialize<CoinChart>(cachedChart);
+                } 
+                catch (Exception) {
+                    // If deserialization fails, remove the key from Redis
+                    Console.WriteLine($"Failed to deserialize cached chart data for {coinId}");
+                    
+                    await _redisDatabase.RemoveKeyAsync(redisKey);
+                }
             }
 
             // Fetch from external API
@@ -68,7 +76,8 @@ namespace CoinGeckoAPI.Shared.Services {
                 throw new Exception($"Failed to fetch coin chart data for {coinId}");
             }
 
-            CoinChart? coinChart = await response.Content.ReadFromJsonAsync<CoinChart>();
+            CoinChartRoot? coinChartRoot = await response.Content.ReadFromJsonAsync<CoinChartRoot>();
+            CoinChart? coinChart = coinChartRoot != null ? new CoinChart(coinChartRoot) : null;
 
             if (coinChart != null)
             {

@@ -47,4 +47,16 @@ public class RedisService : IRedisService
         // Store the key-value pair in Redis
         await _db.StringSetAsync(key, value, expiry);
     }
+
+    /// <inheritdoc />
+    public async Task RemoveKeyAsync(string key)
+    {
+        if (string.IsNullOrEmpty(key))
+        {
+            throw new ArgumentException("Key cannot be null or empty.", nameof(key));
+        }
+
+        // Remove the key from Redis
+        await _db.KeyDeleteAsync(key);
+    }
 }

@@ -17,4 +17,12 @@ public interface IRedisService
     /// <param name="value">The value to associate with the key.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
     Task SetValueAsync(string key, string value, TimeSpan? expiry = null);
+
+    /// <summary>
+    /// Removes a key from Redis.
+    /// </summary>
+    /// <param name="key">The key to be removed.</param>
+    /// <returns>A task that represents the asynchronous operation.</returns>
+    /// 
+    Task RemoveKeyAsync(string key);
 }
