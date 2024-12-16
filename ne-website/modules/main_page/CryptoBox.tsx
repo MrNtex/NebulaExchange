@@ -1,7 +1,7 @@
 import React from 'react'
-import Tile from './Tile'
+import Tile from '../../components/Tile'
 import Image from 'next/image'
-import ChangeMarker from './ChangeMarker'
+import ChangeMarker from '../../components/ChangeMarker'
 
 interface CryptoBoxProps {
   tag: string

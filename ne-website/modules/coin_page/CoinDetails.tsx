@@ -4,7 +4,7 @@ import { CoinAdvanced, Currencies } from '@/types/coins'
 import { Info } from 'lucide-react'
 import { title } from 'process'
 import React from 'react'
-import { HoverCard, HoverCardContent, HoverCardTrigger } from './ui/hover-card'
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '../../components/ui/hover-card'
 
 export default function CoinDetails() {
 

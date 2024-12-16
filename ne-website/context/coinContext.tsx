@@ -3,12 +3,12 @@
 import { CoinAdvanced } from "@/types/coins";
 import { createContext, useContext, useEffect, useState } from "react";
 
-enum Scales {
+export enum Scales {
   "1d" = "1d",
   "7d" = "7d",
   "30d" = "30d",
   "90d" = "90d",
-  "1y" = "1y",
+  "365d" = "365d",
   "max" = "max",
 }
 
@@ -36,9 +36,6 @@ export function CoinProvider({ children }: { children: any }) {
   const [currency, setCurrency] = useState("usd");
   const [coin, setCoin] = useState<CoinAdvanced | null>(null);
   const [scale, setScale] = useState<Scales>(Scales["1d"]);
-  useEffect(() => {
-    console.log(coin);
-  }, []);
 
   return (
     <CoinContext.Provider value={{ coin, setCoin, currency, setCurrency, scale, setScale }}>

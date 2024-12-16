@@ -1,14 +1,14 @@
 "use client";
 
-import { Coin } from '@/types/coins';
+import { Coin, CoinSimple } from '@/types/coins';
 import React, { useEffect, useState } from 'react'
 import { DataTable } from './data-table';
 import { columns } from './columns';
 
-async function getData(): Promise<Coin[]> {
+async function getData(): Promise<CoinSimple[]> {
   try {
     const data = await fetch(`http://localhost:5000/api/listcoins/marketcap?limit=100`);
-    return data.json() as Promise<Coin[]>;
+    return data.json() as Promise<CoinSimple[]>;
   } catch (error) {
     console.log('Error fetching data', error);
     return [];
@@ -17,7 +17,7 @@ async function getData(): Promise<Coin[]> {
 
 
 export default function CoinsTable() {
-  const [coins, setCoins] = useState<Coin[]>([]);
+  const [coins, setCoins] = useState<CoinSimple[]>([]);
   const [page, setPage] = useState(1);
   useEffect(() => {
     const fetchCoins = async () => {

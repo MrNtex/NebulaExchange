@@ -1,15 +1,15 @@
 'use client';
 
 import React from 'react'
-import Tile from './Tile'
+import Tile from '../../components/Tile'
 import CryptoBox from './CryptoBox'
-import { Skeleton } from './ui/skeleton';
-import MarketCap from './MarketCap';
-import { Coin } from '@/types/coins';
+import { Skeleton } from '../../components/ui/skeleton';
+import MarketCap from '../../components/MarketCap';
+import { CoinSimple } from '@/types/coins';
 
 
 export default function MainPageHeader() {
-  const [cryptoPrices, setCryptoPrices] = React.useState<Coin[][]>([])
+  const [cryptoPrices, setCryptoPrices] = React.useState<CoinSimple[][]>([])
   const [loading, setLoading] = React.useState<boolean>(true)
 
   React.useEffect(() => {
@@ -43,7 +43,7 @@ export default function MainPageHeader() {
       if (!data.ok) {
         throw new Error('Failed to fetch data');
       }
-      return data.json() as Promise<Coin[]>;
+      return data.json() as Promise<CoinSimple[]>;
     } catch (error) {
       console.log('Error fetching data', error)
     }

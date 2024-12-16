@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, ReferenceLine, XAxis, YAxis } from "recharts";
 
@@ -16,9 +16,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../../components/ui/skeleton";
 import { roundTo } from "@/lib/numberUtils";
-import { useCoin } from "@/context/coinContext";
+import { Scales, useCoin } from "@/context/coinContext";
 
 
 const chartConfig = {
@@ -32,13 +32,14 @@ interface CryptoChartProps {
   type: "prices" | "market_caps" | "volumes";
 }
 
-const getPrices = async (coin: string) => {
+const getPrices = async (coin: string, scale: Scales) => {
   console.log("Fetching data from server for coin", coin.toLowerCase());
 
   try {
     const data = await fetch(
-      `https://api.coingecko.com/api/v3/coins/${coin.toLowerCase()}/market_chart?vs_currency=usd&days=30`
+      `https://api.coingecko.com/api/v3/coins/${coin.toLowerCase()}/market_chart?vs_currency=usd&days=${scale}`
     );
+    console.log(`https://api.coingecko.com/api/v3/coins/${coin.toLowerCase()}/market_chart?vs_currency=usd&days=${scale}`)
     if (!data.ok) {
       throw new Error("Failed to fetch data");
     }
@@ -64,12 +65,15 @@ export function CryptoChart({type}: CryptoChartProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [days, setDays] = useState<number>(1);
 
-  const { coin } = useCoin();
+  const { coin, scale } = useCoin();
+
+  const stableCoin = useMemo(() => coin, [coin]);
+  const stableScale = useMemo(() => scale, [scale]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const data = await getPrices(coin?.id || "");
+      const data = await getPrices(stableCoin?.id || "", stableScale);
 
       if (data) {
         const chartData = convertToChartData(data);
@@ -81,7 +85,7 @@ export function CryptoChart({type}: CryptoChartProps) {
       setLoading(false);
     };
     fetchData();
-  }, [coin]);
+  }, [stableCoin, stableScale]);
 
   if (loading) {
     return (

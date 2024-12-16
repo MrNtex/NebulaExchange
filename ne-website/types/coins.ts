@@ -5,11 +5,11 @@ export interface Coin {
 }
 
 export interface CoinSimple extends Coin {
-  image?: any; // Can be refined to a specific type if known
-  market_cap?: number;
-  total_volume?: number;
-  price_change_percentage_24h?: number;
-  current_price?: number;
+  image: any; // Can be refined to a specific type if known
+  market_cap: number;
+  total_volume: number;
+  price_change_percentage_24h: number;
+  current_price: number;
 }
 
 export interface Market {
