@@ -14,6 +14,7 @@ export interface CoinSimple extends Coin {
 
 export interface Market {
   name?: string;
+  logo?: string;
   identifier?: string;
   has_trading_incentive?: boolean;
   trade_url?: string;

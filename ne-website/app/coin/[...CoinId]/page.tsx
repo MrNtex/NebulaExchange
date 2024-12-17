@@ -72,7 +72,7 @@ const Content = ({ coinInfo }: { coinInfo: CoinAdvanced }) => {
     return <div>Loading...</div>;
   }
   return (
-    <div>
+    <div className="container mx-auto py-10 w-full">
       <div className="flex justify-between w-full">
         <div className="w-5/12">
           <CoinHeader />
@@ -84,6 +84,7 @@ const Content = ({ coinInfo }: { coinInfo: CoinAdvanced }) => {
           <RangeSelect />
         </div>
       </div>
+
       <TickerTable columns={columns} data={coin.tickers} />
     </div>
     
