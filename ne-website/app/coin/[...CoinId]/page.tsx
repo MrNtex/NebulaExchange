@@ -13,6 +13,7 @@ import { TickerTable } from "@/modules/coin_page/ticker-table/ticker-table";
 import { columns } from "@/modules/coin_page/ticker-table/columns";
 import CoinConverter from "@/modules/coin_page/CoinConverter";
 import CoinOverview from "@/modules/coin_page/CoinOverview";
+import CoinCommunity from "@/modules/coin_page/CoinCommunity";
 
 const Post = () => {
   const params = useParams();
@@ -94,6 +95,7 @@ const Content = ({ coinInfo }: { coinInfo: CoinAdvanced }) => {
         </div>
         
       </div>
+      <CoinCommunity />
       
       <TickerTable columns={columns} data={coin.tickers} />
     </div>

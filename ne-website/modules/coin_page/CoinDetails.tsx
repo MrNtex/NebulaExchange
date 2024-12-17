@@ -20,7 +20,7 @@ export default function CoinDetails() {
           <div className='flex  items-center gap-1'>
             <span className=' text-gray-400 text-center'>{title}: </span>
             <HoverCardTrigger>
-              <div className='hover:bg-opacity-70 bg-opacity-0 bg-zinc-800 flex items-center justify-center p-2 rounded-md  transition-all ease-in-out duration-300'>
+              <div className='hover:bg-opacity-70 bg-opacity-0  flex items-center justify-center p-2 rounded-md  transition-all ease-in-out duration-300'>
                 <Info className='inline-block ' color='#c4c4c4' size={16} />
               </div>
             </HoverCardTrigger>

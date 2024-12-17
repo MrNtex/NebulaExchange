@@ -43,7 +43,7 @@ export default function CoinConverter() {
   }
 
   return (
-    <div className='w-64 border rounded-md p-4'>
+    <div className='w-64 border rounded-md p-4 items-center justify-center flex flex-col gap-4'>
       <h1 className='mb-4 text-xl'>🪙 Coin Converter</h1>
       <div className='items-center justify-center flex flex-col gap-4 mt-4'>
         {/* Top Input */}
@@ -54,7 +54,7 @@ export default function CoinConverter() {
             value={topValue}
             onChange={handleTopInput}
           />
-          <span>{isSwapped ? currencyTag : '$'}</span>
+          <span>{isSwapped ? currencyTag : 'USD'}</span>
         </div>
 
         {/* Swap Button */}
@@ -73,7 +73,7 @@ export default function CoinConverter() {
             value={bottomValue}
             readOnly
           />
-          <span>{isSwapped ? '$' : currencyTag}</span>
+          <span>{isSwapped ? 'USD' : currencyTag}</span>
         </div>
       </div>
     </div>
