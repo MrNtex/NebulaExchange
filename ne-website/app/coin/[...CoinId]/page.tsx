@@ -11,6 +11,8 @@ import { useEffect, useState } from "react";
 import RangeSelect from "@/modules/coin_page/RangeSelect";
 import { TickerTable } from "@/modules/coin_page/ticker-table/ticker-table";
 import { columns } from "@/modules/coin_page/ticker-table/columns";
+import CoinConverter from "@/modules/coin_page/CoinConverter";
+import CoinOverview from "@/modules/coin_page/CoinOverview";
 
 const Post = () => {
   const params = useParams();
@@ -84,7 +86,15 @@ const Content = ({ coinInfo }: { coinInfo: CoinAdvanced }) => {
           <RangeSelect />
         </div>
       </div>
-
+      <div className="flex justify-between w-full gap-4 my-12">
+        <CoinConverter />
+        <div className="w-px mx-4"></div>
+        <div className="flex-1">
+          <CoinOverview />
+        </div>
+        
+      </div>
+      
       <TickerTable columns={columns} data={coin.tickers} />
     </div>
     

@@ -2,6 +2,7 @@
 
 import { Ticker } from "@/types/coins";
 import { ColumnDef } from "@tanstack/react-table";
+import { ExternalLink } from "lucide-react";
 
 export const columns: ColumnDef<Ticker>[] = [
   {
@@ -34,6 +35,7 @@ export const columns: ColumnDef<Ticker>[] = [
               />
             )}
             <span>{marketName}</span>
+            <ExternalLink size={16} color="#a2a2a2" />
           </div>
         </a>
       );
