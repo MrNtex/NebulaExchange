@@ -70,7 +70,7 @@ export default function MainPageHeader() {
   
 
   return (
-    <div className='flex justify-around py-4'>
+    <div className='flex justify-around py-4 gap-2'>
       <Tile title='💸 By Market Cap' className='min-w-80'>
         <ListCoinsInBox idx={0} />
       </Tile>

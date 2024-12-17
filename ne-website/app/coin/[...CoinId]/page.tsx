@@ -9,6 +9,8 @@ import { CoinAdvanced } from "@/types/coins";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import RangeSelect from "@/modules/coin_page/RangeSelect";
+import { TickerTable } from "@/modules/coin_page/ticker-table/ticker-table";
+import { columns } from "@/modules/coin_page/ticker-table/columns";
 
 const Post = () => {
   const params = useParams();
@@ -30,6 +32,7 @@ const Post = () => {
       );
 
       if (coinData) {
+        console.log(coinData);
         setCoinInfo(coinData);
       } else {
         console.log('Error fetching data');
@@ -69,17 +72,21 @@ const Content = ({ coinInfo }: { coinInfo: CoinAdvanced }) => {
     return <div>Loading...</div>;
   }
   return (
-    <div className="flex justify-between w-full">
-      <div className="w-5/12">
-        <CoinHeader />
-        <CoinDetails />
+    <div>
+      <div className="flex justify-between w-full">
+        <div className="w-5/12">
+          <CoinHeader />
+          <CoinDetails />
+        </div>
+        <div className="w-px bg-gray-300 mx-4"></div>
+        <div className="flex-1">
+          <CryptoChart type={chartType}/>
+          <RangeSelect />
+        </div>
       </div>
-      <div className="w-px bg-gray-300 mx-4"></div>
-      <div className="flex-1">
-        <CryptoChart type={chartType}/>
-        <RangeSelect />
-      </div>
+      <TickerTable columns={columns} data={coin.tickers} />
     </div>
+    
   );
 };
 

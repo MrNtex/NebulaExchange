@@ -32,7 +32,7 @@ export default function Tile({
 
   return (
     <div
-      className={`${styles.dashboardCard} rounded-lg shadow-md ${className} py-2`}
+      className={`${styles.dashboardCard} rounded-lg shadow-md ${className} py-2 w-full`}
       onMouseMove={handleMouseMove}
       style={{ gridColumn: `span ${colSpan}` }}
     >

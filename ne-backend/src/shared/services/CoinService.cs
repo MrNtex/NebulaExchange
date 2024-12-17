@@ -26,7 +26,7 @@ namespace CoinGeckoAPI.Shared.Services {
             }
 
             // Fetch from external API
-            HttpResponseMessage response = await _httpClient.GetAsync($"https://api.coingecko.com/api/v3/coins/{coinId}");
+            HttpResponseMessage response = await _httpClient.GetAsync($"https://api.coingecko.com/api/v3/coins/{coinId}?include_exchange_logo=true");
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Failed to fetch coin data for {coinId}");

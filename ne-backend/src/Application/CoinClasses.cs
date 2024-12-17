@@ -22,6 +22,8 @@ public record CoinSimple : Coin
 public record Market
 {
     public string? Name { get; set; }
+
+    public string? Logo {get; set; }
     public string? Identifier { get; set; }
     [JsonPropertyName("has_trading_incentive")]
     public bool? HasTradingIncentive { get; set; }
