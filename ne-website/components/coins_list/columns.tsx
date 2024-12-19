@@ -7,6 +7,7 @@ import { Coin, CoinSimple } from "@/types/coins"
 import { Crown } from "lucide-react"
 import ChangeMarker from "../ChangeMarker"
 import { formatNumber, roundTo } from "@/lib/numberUtils"
+import FavButton from "@/modules/main_page/FavButton"
 
 export const columns: ColumnDef<CoinSimple>[] = [
   {
@@ -14,7 +15,7 @@ export const columns: ColumnDef<CoinSimple>[] = [
     header: '',
     cell: (row) => {
       return (
-        <Crown />
+        <FavButton id={row.row.original.id} />
       )
     }
   },

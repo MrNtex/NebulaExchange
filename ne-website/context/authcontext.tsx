@@ -6,11 +6,48 @@ import React, {useContext, useState, useEffect, use} from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, db } from '@/firebase'
 
-interface UserData {
+export interface UserCoin {
+  id: string;
+  amount: number;
+  price: number;
+  boughtAt?: Date;
+  boughtPrice?: number;
+}
+
+export interface UserPortfolio {
+  coins: UserCoin[];
+}
+
+export interface UserDataDB
+{
   email: string;
   name: string;
 
   uid: string;
+  coins: UserCoin[];
+  favorites: string[];
+}
+
+export interface UserData {
+  email: string;
+  name: string;
+
+  uid: string;
+  coins: UserCoin[];
+  favoritesSet: Set<string>;
+}
+function convertUserDataDBToUserData(userDataDB: UserDataDB): UserData {
+  return {
+    ...userDataDB,
+    favoritesSet: new Set(userDataDB.favorites),
+  };
+}
+function convertUserDataToUserDataDB(userData: UserData): UserDataDB {
+  const { favoritesSet, ...rest } = userData; // Exclude favoritesSet
+  return {
+    ...rest,
+    favorites: Array.from(favoritesSet),
+  };
 }
 
 interface AuthContextType {
@@ -79,7 +116,10 @@ export function AuthProvider(props: { children: any }) {
             ...data,
           };
         }
-        setUserDataObj(firebaseData as UserData);
+
+        const userData = convertUserDataDBToUserData(firebaseData as UserDataDB);
+
+        setUserDataObj(userData);
       } catch (err: any) {
         console.log(err.message);
       } finally {
@@ -92,11 +132,13 @@ export function AuthProvider(props: { children: any }) {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        if (!user) {
+        if (!user || !userDataObj) {
           return
         }
-        const docRef = doc(db, 'users', user.uid)
-        setDoc(docRef, userDataObj)
+        const docRef = doc(db, 'users', user.uid);
+      const userDataDB: UserDataDB = convertUserDataToUserDataDB(userDataObj);
+      console.log(userDataDB)
+      await setDoc(docRef, userDataDB);
       }
       catch (err: any) {
         console.error(err.message)

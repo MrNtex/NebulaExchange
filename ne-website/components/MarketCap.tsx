@@ -13,7 +13,7 @@ interface MarketCapInfo {
   market_cap_change_percentage_24h_usd: number;
 }
 
-export default function MarketCap({ topCoins }: { topCoins: Coin[][] }) {
+export default function MarketCap({ topCoins }: { topCoins: CoinSimple[][] }) {
   const [marketcap, setMarketCap] = useState<MarketCapInfo>();
   const [loading, setLoading] = useState<boolean>(true);
 
