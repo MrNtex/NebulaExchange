@@ -1,5 +1,6 @@
 import datetime
 import time
+from sklearn.model_selection import TimeSeriesSplit
 import torch
 import numpy as np
 from torch import nn
@@ -8,11 +9,57 @@ from torch.utils.data import TensorDataset, DataLoader
 
 from tqdm import tqdm
 
+from scaler import get_scaler
+from model import get_model, model_params
 from config import config
 
 class train:
     def __init__(self):
         pass
+
+    def train_model(X, y):
+        
+        model = get_model("LSTM", len(X.columns))
+
+
+        
+
+        scaler = get_scaler("minmax")
+
+        ### 
+        ### Time Series Split
+        # In a time series split you want to make sure that none of the information about the future is fed into your model
+        #  to give it observations about something it shouldn't have seen at that moment in time. 
+        # It also is known as a sliding window approach where you grow the amount of training data that you're providing it in time 
+        # and then testing on the amount of time right after the training period ends.
+
+        tss = TimeSeriesSplit(n_splits=config.FOLDS, max_train_size=None, test_size=None, gap=0)
+
+
+        # Train
+
+        print("Training on GPU" if torch.cuda.is_available() else "Training on CPU")
+
+        train_losses, validation_losses, oof, y_trues = train.train_function(X, y, scaler, model_params['device'], model, model_params, tss)
+            
+            
+        def unstack(oof):
+            preds = []
+            for batch_prediction in oof:
+                preds.append(batch_prediction.tolist())
+            preds = [item for sublist in preds for item in sublist]
+            preds = [item for sublist in preds for item in sublist]
+            return preds
+
+
+        oof = unstack(oof)
+        y_trues = unstack(y_trues)
+
+        # Save the model's state_dict (weights)
+        torch.save(model.state_dict(), 'trained_model.pth')
+        print("Model saved as 'trained_model.pth'")
+
+    
     def train_function(X, y, scaler, device, model, model_params, tss):
 
         # Out of Fold Predictions

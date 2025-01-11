@@ -1,28 +1,23 @@
-import plotly.express as px
+import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
 import torch
 
+from scaler import get_scaler
+import prepare_data
+from model import get_model, model_params
+
+# Prepare data
+X, y, df = prepare_data.prepare_data()
+
 # Initialize the model
-model = get_model("RNN", len(X.columns))
+model = get_model("LSTM", len(X.columns))
 
 # Load the saved model weights
-model.load_state_dict(torch.load('trained_model.pth'))
-# Align lengths
-min_length = min(len(oof), len(y_trues), len(index))
-oof = oof[:min_length]
-y_trues = y_trues[:min_length]
-aligned_index = index[:min_length]
+model.load_state_dict(torch.load('trained_model.pth', weights_only=True))
 
-# Create DataFrame
-plot_df = pd.DataFrame({"oof": oof, "y_true": y_trues, "Timestamp": aligned_index})
 
-output_path = "predicted_vs_actual.csv"  # Specify the file name or path
-plot_df.to_csv(output_path, index=False)  # Save without the index
-
-print(f"File saved as {output_path}")
-print(f"Input dimensions: {input_dim}")
-
-def predict_future(model, scaler, last_known_data, future_steps, input_dim, device):
+def predict_future_with_lags(model, scaler, last_known_data, future_steps, input_dim, device):
     model.eval()  # Set model to evaluation mode
     predictions = []
     
@@ -43,30 +38,49 @@ def predict_future(model, scaler, last_known_data, future_steps, input_dim, devi
         # Append the predicted value to the list of predictions
         predictions.append(predicted.item())
         
-        # Update the input data by appending the predicted value (keep dimensions intact)
+        # Update the input data by appending the predicted value (shift lags)
         current_input = np.roll(current_input, -1, axis=1)  # Shift array to the left (sequence dimension)
         current_input[0, -1, 0] = predicted.item()  # Insert the predicted value into the first feature position
 
     return predictions
 
+
+# Initialize scaler
+scaler = get_scaler("minmax")
 scaler.fit(X)
-# Get the last known data point
+
+input_dim = 60  # Number of previous time steps to use as input
+future_steps = 31  # Number of steps to predict into the future
+
+# Get the last known data point (the most recent data)
 last_known_data = X.iloc[-input_dim:].values
 
-print(f"Last know data: {last_known_data}")
-
+print(f"Last known data: {last_known_data}")
 print(f"Last known data shape: {last_known_data.shape}")
 
-# Number of steps to predict into the future
-future_steps = 10
-
 # Get the predictions for the next `future_steps` days
-predictions = predict_future(model, scaler, last_known_data, future_steps, input_dim, device)
+predictions = predict_future_with_lags(model, scaler, last_known_data, future_steps, input_dim, model_params['device'])
 
+# Reshape predictions to match the scaler's expected input shape
+# Add placeholder columns (e.g., zeros) to match the scaler's expected number of features (64 in this case)
+predictions_reshaped = np.array(predictions).reshape(-1, 1)
+predictions_with_zeros = np.hstack([predictions_reshaped, np.zeros((predictions_reshaped.shape[0], X.shape[1] - 1))])
+
+# Inverse transform the predictions to return to the original scale
+predictions_inv = scaler.inverse_transform(predictions_with_zeros)[:, 0]  # Only keep the "Open" column
+
+# Now predictions_inv will contain the inverse-transformed predicted values
+
+# Get the last timestamp from your data
 last_timestamp = pd.to_datetime(df.index[-1])
-# Convert predictions into a DataFrame with the corresponding timestamps
+
+print(f"Last timestamp: {df[-5:]} {last_timestamp}")
+
+# Generate future dates based on the last known timestamp
 future_dates = pd.date_range(last_timestamp + pd.Timedelta(days=1), periods=future_steps, freq='D')
-future_df = pd.DataFrame({"Timestamp": future_dates, "Predicted_Open": predictions})
+
+# Create a DataFrame for future predictions
+future_df = pd.DataFrame({"Timestamp": future_dates, "Predicted_Open": predictions_inv})
 
 # Save the future predictions to a CSV file
 future_df.to_csv("future_predictions.csv", index=False)
@@ -104,9 +118,3 @@ fig.update_layout(
     yaxis=dict(color="#cf7200")  # Y-axis color
 )
 
-# Save the plot to a file
-fig.write_html("predicted_vs_actual_chart.html")
-print("Chart saved as 'predicted_vs_actual_chart.html'")
-
-# Display the plot
-fig.show()
