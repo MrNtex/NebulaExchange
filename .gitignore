@@ -2,3 +2,7 @@ data/bitcoin/btcusd_1-min_data.csv
 /env
 __pycache__/
 data/
+trained_model.pth
+future_predictions.csv
+predicted_vs_actual_chart.html
+predicted_vs_actual.csv

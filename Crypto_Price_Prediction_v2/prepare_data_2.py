@@ -14,6 +14,7 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau
 from torch.utils.data import TensorDataset, DataLoader
 from tqdm import tqdm
 
+from model import get_model, model_params
 from train import train
 from Models.GRU import GRUModel
 from Models.LSTM import LSTMModel
@@ -42,21 +43,30 @@ df = pd.read_csv(file_path, sep=',')
 print(df.head())
 
 
+
 df = df[["Open", "Timestamp"]]
 df.set_index("Timestamp", inplace=True)
-df.index = pd.to_datetime(df.index)
+df.index = pd.to_datetime(df.index, unit='s')
 print(f"Dataframe shape: {df.shape}")
-df.head()# Set 'Timestamp' as index
+print(df.head())# Set 'Timestamp' as index
+
+# Resample to daily data
+df_daily = df['Open'].resample('D').mean().dropna()
+df = df_daily.to_frame(name="Open")
+print(f"Dataframe shape (daily): {df.shape}")
+print(df.head())
 
 def generate_time_lags(df, n_lags):
     df_n = df.copy()
     for n in range(1, n_lags + 1):
         df_n[f"lag{n}"] = df_n["Open"].shift(n)
-    df_n = df_n.iloc[n_lags:]
+
+    df_n = df_n.dropna()
     return df_n
     
 input_dim = 60
-df_copy = df.copy()
+
+
 df = generate_time_lags(df, input_dim)
 
 # Adding day, day_of_week, and month columns
@@ -90,27 +100,8 @@ df.reset_index(drop=True, inplace=True)
 X = df.loc[:, df.columns != "Open"]
 y = df.loc[:, df.columns == "Open"]
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = get_model("LSTM", len(X.columns))
 
-def get_model(model, model_params):
-    models = {
-        "LSTM": LSTMModel,
-        "GRU": GRUModel,
-        "RNN": RNNModel,
-    }
-
-    return models.get(model.upper())(**model_params)
-
-model_params = {
-    'input_dim': len(X.columns),
-    'hidden_dim': config.HIDDEN_DIM,
-    'layer_dim': config.LAYER_DIM,
-    'output_dim': config.OUTPUT_DIM,
-    'dropout_prob': config.DROPOUT,
-    'device': device
-}
-
-model = get_model("RNN", model_params).to(device)
 
 def get_scaler(scaler):
     scalers = {
@@ -137,7 +128,7 @@ tss = TimeSeriesSplit(n_splits=config.FOLDS, max_train_size=None, test_size=None
 
 print("Training on GPU" if torch.cuda.is_available() else "Training on CPU")
 
-train_losses, validation_losses, oof, y_trues = train.train_function(X, y, scaler, device, model, model_params, tss)
+train_losses, validation_losses, oof, y_trues = train.train_function(X, y, scaler, model_params['device'], model, model_params, tss)
 
 def plot_losses(train_losses, validation_losses):
     plt.plot(train_losses, label="Training loss")
@@ -167,39 +158,6 @@ def unstack(oof):
 oof = unstack(oof)
 y_trues = unstack(y_trues)
 
-import plotly.express as px
-import plotly.graph_objects as go
-
-plot_df = pd.DataFrame([oof, y_trues]).T
-plot_df.columns = ["oof","y_true"]
-plot_df["date"] = index[0:4850]
-plot_df = plot_df[0:4800]
-plot_df.sort_values(by="date",inplace=True)
-
-fig = go.Figure()
-
-fig1 = fig.add_trace(
-    go.Scatter(
-        x = plot_df["date"],
-        y = plot_df["oof"],
-        name = "Predicted", # LINE LEGEND
-        marker=dict(color="#eb9607"), # LINE COLOR
-    )
-)
-fig2 = fig.add_trace(
-    go.Scatter(
-        x = plot_df["date"],
-        y = plot_df["y_true"],
-        name = "Actual", # LINE LEGEND
-        marker=dict(color="#ecc257"), # LINE COLOR
-    )
-)
-
-fig.update_layout(
-    title_text="Predicted vs Actual Luna Price",
-    template="plotly_dark",
-    title_font_color="#cf7200", # TITLE FONT COLOR
-    xaxis=dict(color="#cf7200"), # X AXIS COLOR
-    yaxis=dict(color="#cf7200") # Y AXIS COLOR
-)
-fig.show()
+# Save the model's state_dict (weights)
+torch.save(model.state_dict(), 'trained_model.pth')
+print("Model saved as 'trained_model.pth'")
