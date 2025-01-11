@@ -15,7 +15,9 @@ export const columns: ColumnDef<CoinSimple>[] = [
     header: '',
     cell: (row) => {
       return (
-        <FavButton id={row.row.original.id} />
+        <div className="cursor-pointer">
+          <FavButton id={row.row.original.id} />
+        </div>
       )
     }
   },

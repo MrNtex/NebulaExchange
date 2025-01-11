@@ -21,12 +21,29 @@ from Models.RNN import RNNModel
 
 from config import config
 
-df = pd.read_csv("C:\\Users\\ntexy\\Documents\\NebulaExchange\\data\\binance-dataset.csv", sep=',')
+import kagglehub
+
+# Download latest version
+path = kagglehub.dataset_download("mczielinski/bitcoin-historical-data")
+
+print("Path to dataset files:", path)
+
+# List files in the directory to find the dataset file
+files = os.listdir(path)
+print("Files in dataset directory:", files)
+
+# Assuming the dataset has a file named "bitcoin.csv" or similar
+# Replace "bitcoin.csv" with the actual file name
+file_name = "btcusd_1-min_data.csv"  # Update this based on the actual file in the directory
+file_path = os.path.join(path, file_name)
+
+# Load the dataset
+df = pd.read_csv(file_path, sep=',')
+print(df.head())
 
 
-
-df = df[["open", "open_time_utc"]]
-df.set_index("open_time_utc", inplace=True)
+df = df[["Open", "Timestamp"]]
+df.set_index("Timestamp", inplace=True)
 df.index = pd.to_datetime(df.index)
 print(f"Dataframe shape: {df.shape}")
 df.head()# Set 'Timestamp' as index
@@ -34,7 +51,7 @@ df.head()# Set 'Timestamp' as index
 def generate_time_lags(df, n_lags):
     df_n = df.copy()
     for n in range(1, n_lags + 1):
-        df_n[f"lag{n}"] = df_n["open"].shift(n)
+        df_n[f"lag{n}"] = df_n["Open"].shift(n)
     df_n = df_n.iloc[n_lags:]
     return df_n
     
@@ -70,8 +87,8 @@ df.drop(columns=["month"], inplace=True)
 
 index = df.index
 df.reset_index(drop=True, inplace=True)
-X = df.loc[:, df.columns != "open"]
-y = df.loc[:, df.columns == "open"]
+X = df.loc[:, df.columns != "Open"]
+y = df.loc[:, df.columns == "Open"]
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
