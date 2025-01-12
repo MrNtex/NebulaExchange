@@ -40,8 +40,11 @@ builder.Services.AddSingleton<IRedisService, RedisService>(sp =>
     return new RedisService(connectionString);
 });
 
+builder.Services.AddScoped<PredictionService>();
+
 // Add CoinService
 builder.Services.AddSingleton<CoinService>();
+
 
 //builder.Services.AddSingleton<CoinService>();
 // Register CoinDataBackgroundService to start background fetching immediately

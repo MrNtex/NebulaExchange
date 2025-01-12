@@ -19,19 +19,22 @@ namespace CoinGeckoAPI.Shared.Services {
 
         public Prediction GetPredictions(string coinId)
         {
-            // TODO: Add redis cache for predictions
+            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Predictions", "future_predictions.csv");
 
-            string filePath = $"Predictions/future_predictions.csv";
+            // Check if file exists before proceeding
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"Predictions file not found at {filePath}");
+            }
 
             using (var reader = new StreamReader(filePath))
             using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             {
                 var records = csv.GetRecords<PredictionRecord>().ToList();
-
                 Prediction prediction = new Prediction(coinId, records);
-
                 return prediction;
             }
         }
+
     }
 }

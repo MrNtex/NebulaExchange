@@ -10,6 +10,9 @@ COPY . .
 RUN dotnet restore
 RUN dotnet publish -c Release -o /app
 
+# Copy the published artifacts to the runtime image
+COPY app/Predictions/future_predictions.csv /app/Predictions/
+
 # Final stage
 FROM base AS final
 WORKDIR /app

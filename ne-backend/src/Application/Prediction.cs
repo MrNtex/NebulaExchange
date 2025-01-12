@@ -13,5 +13,5 @@ public class Prediction
 public class PredictionRecord
 {
     public long Timestamp { get; set; }
-    public double PredictedOpen { get; set; } 
+    public double Predicted_Open { get; set; } 
 }

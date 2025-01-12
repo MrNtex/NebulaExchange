@@ -30,12 +30,12 @@ namespace CoinGeckoAPI.Controllers
         /// <response code="200">Returns the prediction</response>
         /// <response code="404">If the coin is not found</response>
         [HttpGet("{coinId}")]
-        public IActionResult Predict(string coinId)
+        public IActionResult Predict()
         {
-          Prediction prediction = _predictionService.GetPredictions(coinId);
+          Prediction prediction = _predictionService.GetPredictions("bitcoin");
           if (prediction == null)
           {
-            return NotFound(new { Message = $"Coin with ID '{coinId}' not found." });
+            return NotFound(new { Message = $"Coin with ID  not found." });
           }
           return Ok(prediction);
         }

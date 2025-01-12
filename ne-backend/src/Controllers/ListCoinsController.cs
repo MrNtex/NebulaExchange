@@ -49,6 +49,12 @@ namespace CoinGeckoAPI.Controllers
             
             return SelectCoins(coins, limit, page);
         }
+        [HttpGet("test")]
+        public IActionResult GetAllCoins()
+        {
+            var coins = "TEST";
+            return Ok(coins);
+        }
 
         // GET: api/coins/marketcap
         [HttpGet("marketcap")]
