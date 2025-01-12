@@ -86,18 +86,9 @@ future_df = pd.DataFrame({"Timestamp": future_dates, "Predicted_Open": predictio
 future_df.to_csv("future_predictions.csv", index=False)
 print(f"Future predictions saved to 'future_predictions.csv'")
 
-# Plotting the future predictions along with the actual data
+# Plotting the future predictions
 fig = go.Figure()
 
-# Plot actual data
-fig.add_trace(
-    go.Scatter(
-        x = df.index,
-        y = df['Open'],
-        name = "Actual Open",  # Line legend
-        marker=dict(color="#ff7f0e"),  # Line color
-    )
-)
 
 # Plot predicted data
 fig.add_trace(
@@ -111,7 +102,7 @@ fig.add_trace(
 
 # Layout for the plot
 fig.update_layout(
-    title_text="Actual vs Predicted Bitcoin Open Price",
+    title_text="Predicted Bitcoin Open Price",
     template="plotly_dark",
     title_font_color="#cf7200",  # Title font color
     xaxis=dict(color="#cf7200"),  # X-axis color

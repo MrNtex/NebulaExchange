@@ -98,7 +98,7 @@ def prepare_data():
     df.drop(columns=["month"], inplace=True)
 
     index = df.index
-    df.reset_index(drop=True, inplace=True)
+    
     X = df.loc[:, df.columns != "Open"]
     y = df.loc[:, df.columns == "Open"]
 
