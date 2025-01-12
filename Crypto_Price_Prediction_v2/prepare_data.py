@@ -42,21 +42,17 @@ def prepare_data():
 
     # Load the dataset
     df = pd.read_csv(file_path, sep=',')
-    print(df.head())
+    print(df.tail())
 
 
 
     df = df[["Open", "Timestamp"]]
     df.set_index("Timestamp", inplace=True)
     df.index = pd.to_datetime(df.index, unit='s')
-    print(f"Dataframe shape: {df.shape}")
-    print(df.head())# Set 'Timestamp' as index
 
     # Resample to daily data
     df_daily = df['Open'].resample('D').mean().dropna()
     df = df_daily.to_frame(name="Open")
-    print(f"Dataframe shape (daily): {df.shape}")
-    print(df.head())
 
     def generate_time_lags(df, n_lags):
         df_n = df.copy()

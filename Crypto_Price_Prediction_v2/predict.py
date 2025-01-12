@@ -24,6 +24,7 @@ def predict_future_with_lags(model, scaler, last_known_data, future_steps, input
     # Ensure the scaler is fitted on the same columns used for training (e.g., X features)
     last_known_data_scaled = scaler.transform(last_known_data)  # Scale the input features (all columns)
 
+    print(f"Last known data scaled: {last_known_data_scaled[-input_dim:]}")
     # Reshape the input to match the expected shape: [batch_size, seq_len, input_size]
     current_input = last_known_data_scaled[-input_dim:].reshape(1, input_dim, -1)  # Add batch dimension
     
@@ -49,7 +50,7 @@ def predict_future_with_lags(model, scaler, last_known_data, future_steps, input
 scaler = get_scaler("minmax")
 scaler.fit(X)
 
-input_dim = 60  # Number of previous time steps to use as input
+input_dim = 100  # Number of previous time steps to use as input
 future_steps = 31  # Number of steps to predict into the future
 
 # Get the last known data point (the most recent data)
@@ -61,36 +62,32 @@ print(f"Last known data shape: {last_known_data.shape}")
 # Get the predictions for the next `future_steps` days
 predictions = predict_future_with_lags(model, scaler, last_known_data, future_steps, input_dim, model_params['device'])
 
-# Reshape predictions to match the scaler's expected input shape
-# Add placeholder columns (e.g., zeros) to match the scaler's expected number of features (64 in this case)
-predictions_reshaped = np.array(predictions).reshape(-1, 1)
-predictions_with_zeros = np.hstack([predictions_reshaped, np.zeros((predictions_reshaped.shape[0], X.shape[1] - 1))])
+print(f"Predictions: {predictions}")
+print(f"Scaler data min: {scaler.data_min_} max: {scaler.data_max_}")
 
-# Inverse transform the predictions to return to the original scale
-predictions_inv = scaler.inverse_transform(predictions_with_zeros)[:, 0]  # Only keep the "Open" column
+predictions_inv = np.array(predictions) * last_known_data[:, 0][-1]  # Inverse-transform the predictions
 
-# Now predictions_inv will contain the inverse-transformed predicted values
 
 # Get the last timestamp from your data
-last_timestamp = pd.to_datetime(df.index[-1])
+last_timestamp = pd.Timestamp(df.index[-1])
 
 print(f"Last timestamp: {df[-5:]} {last_timestamp}")
 
 # Generate future dates based on the last known timestamp
 future_dates = pd.date_range(last_timestamp + pd.Timedelta(days=1), periods=future_steps, freq='D')
+# Convert timestamps to Unix format
+unix_timestamps = future_dates.astype(int) // 10**9  # Convert to seconds since epoch
 
 # Create a DataFrame for future predictions
-future_df = pd.DataFrame({"Timestamp": future_dates, "Predicted_Open": predictions_inv})
+future_df = pd.DataFrame({"Timestamp": unix_timestamps, "Predicted_Open": predictions_inv})
 
-# Save the future predictions to a CSV file
+
 future_df.to_csv("future_predictions.csv", index=False)
 print(f"Future predictions saved to 'future_predictions.csv'")
 
-# Plotting the future predictions
 fig = go.Figure()
 
 
-# Plot predicted data
 fig.add_trace(
     go.Scatter(
         x = future_df["Timestamp"],
@@ -100,7 +97,6 @@ fig.add_trace(
     )
 )
 
-# Layout for the plot
 fig.update_layout(
     title_text="Predicted Bitcoin Open Price",
     template="plotly_dark",
