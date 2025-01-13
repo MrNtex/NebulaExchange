@@ -9,11 +9,15 @@ export interface Token {
 interface DashboardContextType {
   tokens: Token[];
   setTokens: (tokens: Token[]) => void; 
+  portfolioValue: number;
+  setPortfolioValue: (value: number) => void;
 }
 
 const defaultDashboardContext: DashboardContextType = {
   tokens: [],
   setTokens: () => {},
+  portfolioValue: 0,
+  setPortfolioValue: () => {},
 }
 
 const DashboardContext = React.createContext<DashboardContextType>(defaultDashboardContext)
@@ -24,10 +28,13 @@ export function useDashboard() {
 
 export default function DashboardProvider(props: { children: any }) {
   const [tokens, setTokens] = React.useState<Token[]>([])
+  const [portfolioValue, setPortfolioValue] = React.useState<number>(0)
 
   const value: DashboardContextType = {
     tokens,
     setTokens,
+    portfolioValue,
+    setPortfolioValue,
   }
 
   return (

@@ -18,26 +18,29 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { useDashboard } from "@/context/dashboardcontext"
+import { Skeleton } from "../ui/skeleton"
+import { formatNumber } from "@/lib/numberUtils"
 
 export const description = "A donut chart with text"
 
-const chartData = [
-  { Composition: "BTC", volume: 275, fill: "hsl(var(--chart-3))" },
-  { Composition: "ETH", volume: 200, fill: "hsl(var(--chart-1))" },
-  { Composition: "PEPE", volume: 287, fill: "hsl(var(--chart-2))" },
-]
+interface ChartData {
+  Composition: string
+  volume: number
+  fill: string
+}
 
 const chartConfig = {
   Composition: {
     label: "Crypto",
   },
-  BTC: {
-    label: "BTC",
-    color: "hsl(var(--chart-1))",
+  bitcoin: {
+    label: "bitcoin",
+    color: "hsl(var(--chart-3))",
   },
-  ETH: {
-    label: "ETH",
-    color: "hsl(var(--chart-2))",
+  ethereum: {
+    label: "ethereum",
+    color: "hsl(var(--chart-1))",
   },
   PEPE: {
     label: "PEPE",
@@ -45,10 +48,36 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-export function PieChartComposition() {
+export interface PieChartCompositionProps {
+  data: { name: string; amount: number }[];
+}
+export function PieChartComposition({ data }: PieChartCompositionProps) {
+  if (!data || data.length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Pie Chart</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Skeleton className="h-48" />
+        </CardContent>
+      </Card>
+    )
+  }
+  const chartData: ChartData[] = []
+
   const totalVolume = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.volume, 0)
+    return data.reduce((curr, item) => curr + item.amount, 0)
   }, [])
+
+  for (const item of data) {
+    const chartItem = chartConfig[item.name.toLowerCase()]
+    chartData.push({
+      Composition: item.name,
+      volume: item.amount,
+      fill: chartItem ? chartItem.color : "hsl(var(--chart-3))",
+    })
+  }
 
   return (
     <ChartContainer
@@ -80,9 +109,9 @@ export function PieChartComposition() {
                     <tspan
                       x={viewBox.cx}
                       y={viewBox.cy}
-                      className="fill-foreground text-3xl font-bold text-white"
+                      className="fill-foreground text-lg font-bold text-white"
                     >
-                      {totalVolume.toLocaleString()}
+                      {formatNumber(totalVolume, "USD")}
                     </tspan>
                     <tspan
                       x={viewBox.cx}

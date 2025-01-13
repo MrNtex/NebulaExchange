@@ -2,7 +2,7 @@
 
 import { fetchCryptoForUser } from '@/actions/fetchCryptoForUser';
 import ChangeMarker from '@/components/ChangeMarker';
-import { PieChartComposition } from '@/components/charts/pie-chart';
+import { PieChartComposition, PieChartCompositionProps } from '@/components/charts/pie-chart';
 import SignUp from '@/components/signup';
 import Tile from '@/components/Tile';
 import { useAuth } from '@/context/authcontext';
@@ -12,6 +12,7 @@ import { PortfolioChart } from '@/modules/dashboard/portfolio-line-chart';
 import { CoinSimple } from '@/types/coins';
 import { Sign } from 'crypto';
 import React, { use, useEffect, useState } from 'react';
+import { Pie } from 'recharts';
 
 export default function DashboardPage() {
   return (
@@ -25,9 +26,8 @@ function DashboardContent() {
 
   const { user, userDataObj} = useAuth();
 
-  const { tokens, setTokens } = useDashboard();
+  const { tokens, setTokens, portfolioValue, setPortfolioValue } = useDashboard();
 
-  const [portfolioValue, setPortfolioValue] = useState(0);
   const [portfolioChange, setPortfolioChange] = useState(0);
 
   useEffect(() => {
@@ -43,6 +43,8 @@ function DashboardContent() {
     fetchData();
   }, [user]);
 
+  const [pieChart, setPieChart] = useState<PieChartCompositionProps['data']>([]);
+
   useEffect(() => {
     let totalValue = 0;
     let yesterday = 0;
@@ -56,6 +58,7 @@ function DashboardContent() {
             const data: CoinSimple = await response.json();
             totalValue += data.current_price * token.amount;
             yesterday += (data.current_price * (100-data.price_change_percentage_24h)/100) * token.amount;
+            pieChart.push({name: token.name, amount: data.current_price * token.amount});
           })
         );
 
@@ -83,7 +86,7 @@ function DashboardContent() {
       </div>
       
       <Tile title="Composition" colSpan={1}>
-          <PieChartComposition />
+          <PieChartComposition data={pieChart} />
         </Tile>
     </div>
   );
