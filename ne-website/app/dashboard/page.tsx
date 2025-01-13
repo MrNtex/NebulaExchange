@@ -6,6 +6,7 @@ import SignUp from '@/components/signup';
 import Tile from '@/components/Tile';
 import { useAuth } from '@/context/authcontext';
 import DashboardProvider, { Token, useDashboard } from '@/context/dashboardcontext';
+import { PortfolioChart } from '@/modules/dashboard/portfolio-line-chart';
 import { Sign } from 'crypto';
 import React, { useEffect } from 'react';
 
@@ -36,13 +37,18 @@ function DashboardContent() {
   }, [user]);
 
   return (
-    <div className="grid grid-cols-4 gap-4 p-4">
+    <div className="p-4 w-full">
+      <h1 className="text-2xl font-semibold col-span-4">💰 My portfolio value: </h1>
+      <div>
+        <div className='absolute z-10 p-8 text-5xl font-extralight'>
+          $ 10,000
+        </div>
+        <div className='h-12'></div>
+        <PortfolioChart/>
+      </div>
+      
       <Tile title="Visitors" colSpan={1}>
           <PieChartComposition />
-        </Tile>
-
-        <Tile title="Visitors" colSpan={12}>
-          <SignUp/>
         </Tile>
     </div>
   );
