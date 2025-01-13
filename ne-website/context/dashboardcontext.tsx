@@ -1,9 +1,8 @@
 import React, { useContext } from 'react'
 
 export interface Token {
-  tickerSymbol: string;
   name: string;
-  balance: number;
+  amount: number;
   purchased: Date;
 }
 

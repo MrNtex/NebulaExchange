@@ -14,6 +14,35 @@ namespace CoinGeckoAPI.Shared.Services {
             _redisDatabase = redisDatabase;
         }
 
+        public async Task<CoinSimple?> GetSimpleCoin(string coinId)
+        {
+            // Check Redis cache first
+            string redisKey = $"coin_data_{coinId}";
+            string? cachedCoin = await _redisDatabase.GetValueAsync(redisKey);
+            
+            if (!string.IsNullOrEmpty(cachedCoin))
+            {
+                return JsonSerializer.Deserialize<CoinSimple>(cachedCoin);
+            }
+
+            // Fetch from external API
+            HttpResponseMessage response = await _httpClient.GetAsync($"https://api.coingecko.com/api/v3/simple/price?ids={coinId}&vs_currencies=usd");
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch coin data for {coinId}");
+            }
+
+            CoinSimple? coin = await response.Content.ReadFromJsonAsync<CoinSimple>();
+
+            if (coin != null)
+            {
+                // Save to Redis
+                await _redisDatabase.SetValueAsync(redisKey, JsonSerializer.Serialize(coin), TimeSpan.FromMinutes(10));
+            }
+
+            return coin;
+        }
+
         public async Task<CoinAdvanced?> GetCoinAsync(string coinId)
         {
             // Check Redis cache first

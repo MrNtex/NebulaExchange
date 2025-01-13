@@ -21,6 +21,24 @@ namespace CoinGeckoAPI.Controllers
           _coinService = coinService;
         }
 
+        [HttpGet("simple/{coinId}")]
+        public async Task<IActionResult> GetSimpleCoin(string coinId)
+        {
+          try
+          {
+            CoinSimple? coin = await _coinService.GetSimpleCoin(coinId);
+            if (coin == null)
+            {
+              return NotFound(new { Message = $"Coin with ID '{coinId}' not found." });
+            }
+            return Ok(coin);
+          }
+          catch (Exception ex)
+          {
+            return StatusCode(500, new { Error = ex.Message });
+          }
+        }
+
         // GET: api/coin/{id}
         /// <summary>
         /// Get a specific coin by ID
