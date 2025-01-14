@@ -50,7 +50,7 @@ export default function Page() {
   function getChange(next: number) {
     if(!coinInfo || !coinInfo.market_data.current_price?.usd) return 0;
 
-    const chg = (coinInfo.market_data.current_price?.usd - next) / coinInfo.market_data.current_price?.usd * 100;
+    const chg = (next - coinInfo.market_data.current_price?.usd) / next * 100;
     return chg;
   }
 

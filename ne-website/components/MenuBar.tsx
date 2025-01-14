@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { Bitcoin, FlaskConical } from 'lucide-react';
+import { Bitcoin, Bot, ChartCandlestick, FlaskConical } from 'lucide-react';
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -99,16 +99,33 @@ export function MenuBar() {
             Labs
           </NavigationMenuTrigger>
           <NavigationMenuContent>
-            <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px] ">
-              {components.map((component) => (
-                <ListItem
-                  key={component.title}
-                  title={component.title}
-                  href={component.href}
-                >
-                  {component.description}
-                </ListItem>
-              ))}
+             <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr] z-50">
+              <li className="row-span-3">
+                <NavigationMenuLink asChild>
+                  <a
+                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-violet-600/20 p-6 no-underline outline-none focus:shadow-md"
+                    href="/"
+                  >
+                    
+                    <div className="mb-2 mt-4 text-lg font-medium">
+                      Nebula labs
+                    </div>
+                    <p className="text-sm leading-tight text-muted-foreground">
+                      Experimental ETFs and cutting-edge AI forecasts
+                      to enhance your trading insights
+                    </p>
+                  </a>
+                </NavigationMenuLink>
+              </li>
+              <ListItem href="/labs" title="Introduction">
+                Learn about our experimental ETFs and cutting-edge AI forecasts.
+              </ListItem>
+              <ListItem href="/labs/etfs" title="ETFs">
+                Explore our experimental ETFs and their performance.
+              </ListItem>
+              <ListItem href="/labs/ai" title="AI Forecasts">
+                Discover our cutting-edge AI forecasts and their accuracy.
+              </ListItem>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
@@ -139,7 +156,7 @@ const ListItem = React.forwardRef<
           )}
           {...props}
         >
-          <div className="text-sm font-medium leading-none">{title}</div>
+          <div className="text-sm font-medium leading-none flex">{title}</div>
           <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
           </p>
