@@ -5,22 +5,18 @@ import Image from 'next/image'
 
 import { Coin, CoinSimple } from "@/types/coins"
 import { Crown } from "lucide-react"
-import ChangeMarker from "../ChangeMarker"
 import { formatNumber, roundTo } from "@/lib/numberUtils"
 import FavButton from "@/modules/main_page/FavButton"
+import ChangeMarker from "@/components/ChangeMarker"
 
-export const columns: ColumnDef<CoinSimple>[] = [
-  {
-    accessorKey: 'favButton',
-    header: '',
-    cell: (row) => {
-      return (
-        <div className="cursor-pointer">
-          <FavButton id={row.row.original.id} />
-        </div>
-      )
-    }
-  },
+export interface PortfolioDataTableProps extends CoinSimple {
+  data: CoinSimple
+  amount: number
+  value: number
+  boughtOn: Date
+}
+
+export const dashboardColumns: ColumnDef<PortfolioDataTableProps>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
@@ -47,7 +43,7 @@ export const columns: ColumnDef<CoinSimple>[] = [
     header: 'Price',
     cell: (row) => {
       return (
-        <p className="font0">{formatNumber(row.row.original.current_price)}</p>
+        <p className="font0">{formatNumber(row.row.original.current_price, 'USD')}</p>
       )
     }
   },
@@ -61,13 +57,22 @@ export const columns: ColumnDef<CoinSimple>[] = [
     }
   },
   {
-    accessorKey: 'market_cap',
-    header: 'Market Cap',
+    accessorKey: 'amount',
+    header: 'Amount',
     cell: (row) => {
       return (
-        <p>{formatNumber(row.row.original.market_cap)}</p>
+        <p>{formatNumber(row.row.original.amount)}</p>
       )
     }
   },
+  {
+    accessorKey: 'value',
+    header: 'Value',
+    cell: (row) => {
+      return (
+        <p>{formatNumber(row.row.original.value, 'USD')}</p>
+      )
+    }
+  }
 ]
 

@@ -6,6 +6,10 @@ export function roundTo(num: number, places: number) {
 export function formatNumber(num: number): string;
 export function formatNumber(num: number, currency: string): string;
 export function formatNumber(num: number, currency?: string): string {
+  if (num > 1){
+    num = roundTo(num, 2);
+  }
+
   const numString = num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   if (currency) {
     currency = currency.toUpperCase();
