@@ -14,6 +14,7 @@ import { columns } from "@/modules/coin_page/ticker-table/columns";
 import CoinConverter from "@/modules/coin_page/CoinConverter";
 import CoinOverview from "@/modules/coin_page/CoinOverview";
 import CoinCommunity from "@/modules/coin_page/CoinCommunity";
+import AddToPortfolioButton from "@/modules/coin_page/AddToPortfolio";
 
 const Post = () => {
   const params = useParams();
@@ -80,6 +81,7 @@ const Content = ({ coinInfo }: { coinInfo: CoinAdvanced }) => {
         <div className="w-5/12">
           <CoinHeader />
           <CoinDetails />
+          <AddToPortfolioButton />
         </div>
         <div className="w-px bg-gray-300 mx-4"></div>
         <div className="flex-1">
