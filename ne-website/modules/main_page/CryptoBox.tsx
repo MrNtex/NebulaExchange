@@ -23,7 +23,7 @@ export default function CryptoBox(props: CryptoBoxProps) {
         <p className='ml-2 text-lg'>{props.tag.toUpperCase()}</p>
       </div>
       
-      <div className='text-right right-0'>
+      <div className='flex flex-col items-end text-right'>
         <p className='text-lg font-semibold'>{props.currentPrice}</p>
         <ChangeMarker change={props.change} className='text-xs text-gray-400'/>
       </div>
