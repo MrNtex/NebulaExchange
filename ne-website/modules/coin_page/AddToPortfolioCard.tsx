@@ -4,14 +4,20 @@ import React, { useEffect } from 'react'
 import Image from 'next/image'
 import { Input } from '@/components/ui/input'
 import { formatNumber, roundTo } from '@/lib/numberUtils'
+import { Label } from '@/components/ui/label'
+import { DatePicker } from './DatePicker'
 
 
 export default function AddToPortfolioCard() {
   const { coin } = useCoin()
 
+  
+
   const [amount, setAmount] = React.useState(0)
   const [width, setWidth] = React.useState(0)
   useEffect(() => {
+    if (!coin || !coin?.market_data.current_price?.usd) return
+
     const targetWidth = String(amount * coin?.market_data.current_price?.usd).length + 3;
     setWidth(0);
     if (amount > 0) {
@@ -40,10 +46,13 @@ export default function AddToPortfolioCard() {
     
   }
 
+  const [date, setDate] = React.useState(new Date())
+
+  if (!coin || !coin.image || !coin.image.small || !coin?.market_data.current_price?.usd) return
 
   return (
-    <div className='w-screen h-screen absolute top-0 left-0 flex items-center justify-center z-50 bg-black bg-opacity-50'>
-      <Card className='bg-zinc-950'>
+    <div className='w-screen h-screen absolute top-0 left-0 flex items-center justify-center z-50 bg-black bg-opacity-50 '>
+      <Card className='bg-zinc-950 w-1/4'>
         <CardHeader>
           <CardTitle className='flex items-center gap-2'>
             <Image src={coin?.image?.small} width={24} height={24} alt={`${coin?.name} icon`} />
@@ -61,7 +70,7 @@ export default function AddToPortfolioCard() {
               value={amount}
               onChange={handleInput} 
             /> 
-            <span className='text-gray-400 flex mr-1'> {coin?.symbol.toUpperCase()}
+            <span className='text-gray-400 flex'> {coin?.symbol.toUpperCase()}
               <span className={`transition duration-300 ${amount > 0 ? '' : 'hidden'} after:block`}>
                 {width > 0 && ` ≈ ${formatNumber(roundTo(amount * coin?.market_data.current_price?.usd, 2), 'USD').slice(0, width)}`}
               </span>
@@ -69,6 +78,11 @@ export default function AddToPortfolioCard() {
             
             
           </div>
+          <div className='flex flex-col gap-2 p-4 w-full'>
+            <Label>Purchased at: </Label>
+            <DatePicker date={date} setDate={setDate} />
+          </div>
+          
         </CardContent>
         <CardFooter>
           <p>Card Footer</p>
