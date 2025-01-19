@@ -6,11 +6,16 @@ import { Input } from '@/components/ui/input'
 import { formatNumber, roundTo } from '@/lib/numberUtils'
 import { Label } from '@/components/ui/label'
 import { DatePicker } from './DatePicker'
+import { Button } from '@/components/ui/button'
+import { useAuth } from '@/context/authcontext'
+import { useToast } from '@/hooks/use-toast'
+import { Token } from '@/context/dashboardcontext'
 
 
-export default function AddToPortfolioCard() {
+export default function AddToPortfolioCard({close} : {close: () => void}) {
   const { coin } = useCoin()
-
+  const { user, userDataObj, setUserDataObj } = useAuth()
+  const { toast } = useToast()
   
 
   const [amount, setAmount] = React.useState(0)
@@ -46,19 +51,38 @@ export default function AddToPortfolioCard() {
     
   }
 
+  function handleAddToPortfolio() {
+    if (!coin || !coin?.market_data.current_price?.usd || !userDataObj) return;
+    const newCoin: Token = {
+      name: coin.id,
+      amount,
+      purchased: date,
+    };
+    setUserDataObj({
+      ...userDataObj,
+      coins: [...userDataObj.coins, newCoin]
+    });
+    close();
+    toast({
+      title: "Added to Portfolio",
+      description: `You have added ${amount} ${coin.symbol.toUpperCase()} to your portfolio.`,
+    })
+  }
+  
+
   const [date, setDate] = React.useState(new Date())
 
-  if (!coin || !coin.image || !coin.image.small || !coin?.market_data.current_price?.usd) return
+  if (!coin || !coin.image || !coin.image.small || !coin?.market_data.current_price?.usd || !user || !userDataObj) return
 
   return (
-    <div className='w-screen h-screen absolute top-0 left-0 flex items-center justify-center z-50 bg-black bg-opacity-50 '>
-      <Card className='bg-zinc-950 w-1/4'>
+    <div className='w-screen h-screen absolute top-0 left-0 flex items-center justify-center z-50 bg-black bg-opacity-50 backdrop-blur-sm' onClick={close}>
+      <Card className='bg-zinc-950 w-1/4' onClick={(e) => e.stopPropagation()}>
         <CardHeader>
-          <CardTitle className='flex items-center gap-2'>
+          <CardTitle className='flex items-center gap-2 px-4 pt-4'>
             <Image src={coin?.image?.small} width={24} height={24} alt={`${coin?.name} icon`} />
              Add {coin?.name} To Your Portfolio
             </CardTitle>
-          <CardDescription>
+          <CardDescription className='px-4'>
             You can see tracked coins on your dashboard.
           </CardDescription>
         </CardHeader>
@@ -85,7 +109,10 @@ export default function AddToPortfolioCard() {
           
         </CardContent>
         <CardFooter>
-          <p>Card Footer</p>
+          <div className='flex items-center justify-around w-full gap-12 p-4'>
+            <Button variant='outline' className='w-full' onClick={close}>Cancel</Button>
+            <Button variant='default' className='w-full' onClick={handleAddToPortfolio}>Add to Portfolio</Button>
+          </div>
         </CardFooter>
       </Card>
     </div>

@@ -5,6 +5,8 @@ import { collection, deleteDoc, doc, getDoc, getDocs, increment, setDoc, updateD
 import React, {useContext, useState, useEffect, use} from 'react'
 import { useRouter } from 'next/navigation'
 import { auth, db } from '@/firebase'
+import { fetchCryptoForUser } from '@/actions/fetchCryptoForUser'
+import { Token } from './dashboardcontext'
 
 export interface UserCoin {
   id: string;
@@ -24,7 +26,6 @@ export interface UserDataDB
   name: string;
 
   uid: string;
-  coins: UserCoin[];
   favorites: string[];
 }
 
@@ -33,17 +34,18 @@ export interface UserData {
   name: string;
 
   uid: string;
-  coins: UserCoin[];
+  coins: Token[];
   favoritesSet: Set<string>;
 }
 function convertUserDataDBToUserData(userDataDB: UserDataDB): UserData {
   return {
     ...userDataDB,
+    coins: [],
     favoritesSet: new Set(userDataDB.favorites),
   };
 }
 function convertUserDataToUserDataDB(userData: UserData): UserDataDB {
-  const { favoritesSet, ...rest } = userData; // Exclude favoritesSet
+  const { favoritesSet, coins, ...rest } = userData; // Exclude favoritesSet and coins
   return {
     ...rest,
     favorites: Array.from(favoritesSet),
@@ -119,7 +121,10 @@ export function AuthProvider(props: { children: any }) {
 
         const userData = convertUserDataDBToUserData(firebaseData as UserDataDB);
 
+        userData.coins = await fetchCryptoForUser(user.uid) as Token[];
+
         setUserDataObj(userData);
+        console.log("User data fetched", userDataObj);
       } catch (err: any) {
         console.log(err.message);
       } finally {
@@ -136,9 +141,15 @@ export function AuthProvider(props: { children: any }) {
           return
         }
         const docRef = doc(db, 'users', user.uid);
-      const userDataDB: UserDataDB = convertUserDataToUserDataDB(userDataObj);
-      console.log(userDataDB)
-      await setDoc(docRef, userDataDB);
+        const userDataDB: UserDataDB = convertUserDataToUserDataDB(userDataObj);
+        await setDoc(docRef, userDataDB);
+
+        for (const coin of userDataObj.coins) {
+          console.log('Setting coin', coin);
+          const docRef = doc(db, 'users', user.uid, 'tokens', coin.name);
+          await setDoc(docRef, coin);
+        }
+
       }
       catch (err: any) {
         console.error(err.message)

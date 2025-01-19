@@ -28,25 +28,14 @@ function DashboardContent() {
 
   const { user, userDataObj} = useAuth();
 
-  const { tokens, setTokens, portfolioValue, setPortfolioValue } = useDashboard();
+  const { portfolioValue, setPortfolioValue } = useDashboard();
 
   const [portfolioChange, setPortfolioChange] = useState(0);
   const [coins, setCoins] = useState<PortfolioDataTableProps[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        console.log('fetching crypto for user with id', user.uid);
-        const response = await fetchCryptoForUser(user!.uid) as Token[];
-        setTokens(response);
-        console.log(response);
-      }
-    };
-
-    fetchData();
-  }, [user]);
-
   const [pieChart, setPieChart] = useState<PieChartCompositionProps['data']>([]);
+
+  const tokens = userDataObj?.coins || [];
 
   useEffect(() => {
     let totalValue = 0;
@@ -54,6 +43,7 @@ function DashboardContent() {
     let coins: PortfolioDataTableProps[] = [];
 
     const getData = async () => {
+      console.log('fetching prices for tokens', tokens);
       if (tokens.length > 0) {
         console.log('fetching prices for tokens', tokens);
         const prices = await Promise.all(
@@ -82,7 +72,7 @@ function DashboardContent() {
     };
 
     getData();
-  }, [tokens]);
+  }, [userDataObj]);
 
   return (
     <div className="p-4 w-full">
