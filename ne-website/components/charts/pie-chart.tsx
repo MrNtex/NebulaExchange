@@ -22,35 +22,30 @@ import { useDashboard } from "@/context/dashboardcontext"
 import { Skeleton } from "../ui/skeleton"
 import { formatNumber } from "@/lib/numberUtils"
 
-export const description = "A donut chart with text"
-
+// Utility to generate random HSL color
+const generateColor = () => {
+  const hue = Math.floor(Math.random() * 360)
+  const saturation = 70 + Math.random() * 20 // 70% to 90%
+  const lightness = 50 + Math.random() * 10 // 50% to 60%
+  return `hsl(${hue}, ${saturation}%, ${lightness}%)`
+}
 interface ChartData {
   Composition: string
   volume: number
   fill: string
 }
 
-const chartConfig = {
+// Base chartConfig
+const chartConfig: ChartConfig = {
   Composition: {
     label: "Crypto",
   },
-  bitcoin: {
-    label: "bitcoin",
-    color: "hsl(var(--chart-3))",
-  },
-  ethereum: {
-    label: "ethereum",
-    color: "hsl(var(--chart-1))",
-  },
-  PEPE: {
-    label: "PEPE",
-    color: "hsl(var(--chart-3))",
-  },
-} satisfies ChartConfig
+}
 
 export interface PieChartCompositionProps {
-  data: { name: string; amount: number }[];
+  data: { name: string; amount: number }[]
 }
+
 export function PieChartComposition({ data }: PieChartCompositionProps) {
   if (!data || data.length === 0) {
     return (
@@ -64,20 +59,31 @@ export function PieChartComposition({ data }: PieChartCompositionProps) {
       </Card>
     )
   }
+
   const chartData: ChartData[] = []
 
   const totalVolume = React.useMemo(() => {
     return data.reduce((curr, item) => curr + item.amount, 0)
-  }, [])
+  }, [data])
 
   for (const item of data) {
-    const chartItem = chartConfig[item.name.toLowerCase()]
+    const coinName = item.name.toLowerCase()
+
+    // Check if coin is already in config, if not add it dynamically
+    if (!chartConfig[coinName]) {
+      chartConfig[coinName] = {
+        label: item.name,
+        color: generateColor(),
+      }
+    }
+
     chartData.push({
       Composition: item.name,
       volume: item.amount,
-      fill: chartItem ? chartItem.color : "hsl(var(--chart-3))",
+      fill: chartConfig[coinName].color || generateColor(),
     })
   }
+  console.log('Chart data', chartData)
 
   return (
     <ChartContainer

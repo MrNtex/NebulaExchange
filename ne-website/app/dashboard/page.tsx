@@ -70,7 +70,7 @@ function DashboardContent() {
       setPortfolioValue(totalValue);
       setPortfolioChange(totalValue - yesterday);
     };
-
+    console.log(pieChart);
     getData();
   }, [userDataObj]);
 
