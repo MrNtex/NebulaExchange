@@ -4,23 +4,25 @@ import React from 'react'
 import Image from 'next/image'
 import { useAuth } from '@/context/authcontext'
 import { MenuBar } from './MenuBar'
+import { DoorClosedIcon } from 'lucide-react'
 
 export default function Header() {
-  const { user, userDataObj} = useAuth()
+  const { user, userDataObj, logout } = useAuth()
 
   const Right = () => {
     if (user) {
       return (
-        <div>
-          {userDataObj?.name}
-          Logout
+        <div className='flex items-center gap-4 h-full p-2 pr-6'>
+          <a href='/dashboard'>{userDataObj?.name}</a>
+          <button onClick={logout}>Logout</button>
         </div>
       )
     }
     return (
-      <div className='flex items-center'>
-        Login
-      </div>
+      <a href='/login' className='flex items-center h-full p-2 pr-6'>
+        <DoorClosedIcon size={24} />
+        <h1>Sign Up</h1>
+      </a>
     )
   }
 

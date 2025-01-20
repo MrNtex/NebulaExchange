@@ -22,7 +22,7 @@ export default function SignUp() {
   const [state, action] = useActionState((state: FormState, data: FormData) => signup(state, data, auth, db), undefined)
 
   return (
-    <div className='p-3 w-96'>
+    <div className='p-3'>
       <form action={action} className='flex flex-col gap-5'>
         <h1 className='text-2xl'>Sign Up 🚀</h1>
         <div>

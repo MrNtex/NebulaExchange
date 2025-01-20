@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { auth, db } from '@/firebase'
 import { fetchCryptoForUser } from '@/actions/fetchCryptoForUser'
 import { Token } from './dashboardcontext'
+import { useToast } from '@/hooks/use-toast'
 
 export interface UserCoin {
   id: string;
@@ -83,10 +84,23 @@ export function AuthProvider(props: { children: any }) {
   const [loading, setLoading] = useState(true)
 
   const router = useRouter()
+  const { toast } = useToast()
 
   function login(email: string, password: string) {
     return signInWithEmailAndPassword(auth, email, password)
-  }
+      .then(() => {
+      setLoading(false);
+      router.push('/dashboard');
+      })
+      .catch((err: any) => {
+      toast({
+        title: 'An error occurred',
+        description: err.message,
+        variant: 'destructive'
+      });
+      return Promise.reject(err);
+      });
+    }
 
   function logout() {
     setUserDataObj(null)

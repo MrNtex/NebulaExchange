@@ -4,7 +4,7 @@ import { fetchCryptoForUser } from '@/actions/fetchCryptoForUser';
 import ChangeMarker from '@/components/ChangeMarker';
 import { PieChartComposition, PieChartCompositionProps } from '@/components/charts/pie-chart';
 import { DataTable } from '@/components/coins_list/data-table';
-import SignUp from '@/components/signup';
+import SignUp from '@/modules/signup/signup';
 import Tile from '@/components/Tile';
 import { useAuth } from '@/context/authcontext';
 import DashboardProvider, { Token, useDashboard } from '@/context/dashboardcontext';
