@@ -64,31 +64,17 @@ export function MenuBar() {
           </NavigationMenuTrigger>
           <NavigationMenuContent>
             <ul className="grid gap-3 p-4 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr] z-50">
-              <li className="row-span-3">
-                <NavigationMenuLink asChild>
-                  <a
-                    className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                    href="/"
-                  >
-                    
-                    <div className="mb-2 mt-4 text-lg font-medium">
-                      shadcn/ui
-                    </div>
-                    <p className="text-sm leading-tight text-muted-foreground">
-                      Beautifully designed components built with Radix UI and
-                      Tailwind CSS.
-                    </p>
-                  </a>
-                </NavigationMenuLink>
-              </li>
-              <ListItem href="/docs" title="Introduction">
-                Re-usable components built using Radix UI and Tailwind CSS.
+              <ListItem href="/trade" title="Trade">
+                Access the trading platform to buy and sell cryptocurrencies.
               </ListItem>
-              <ListItem href="/docs/installation" title="Installation">
-                How to install dependencies and structure your app.
+              <ListItem href="/wallet" title="Wallet">
+                Manage your cryptocurrency wallets securely.
               </ListItem>
-              <ListItem href="/docs/primitives/typography" title="Typography">
-                Styles for headings, paragraphs, lists...etc
+              <ListItem href="/market" title="Market">
+                View live market data and price charts.
+              </ListItem>
+              <ListItem href="/support" title="Support">
+                Get help with your account or transactions.
               </ListItem>
             </ul>
           </NavigationMenuContent>
@@ -123,7 +109,7 @@ export function MenuBar() {
               <ListItem href="/labs/etfs" title="ETFs">
                 Explore our experimental ETFs and their performance.
               </ListItem>
-              <ListItem href="/labs/ai" title="AI Forecasts">
+              <ListItem href="/labs/ai_prediction" title="AI Forecasts">
                 Discover our cutting-edge AI forecasts and their accuracy.
               </ListItem>
             </ul>

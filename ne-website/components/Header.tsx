@@ -19,7 +19,7 @@ export default function Header() {
       )
     }
     return (
-      <a href='/login' className='flex items-center h-full p-2 pr-6'>
+      <a href='/signup' className='flex items-center h-full p-2 pr-6'>
         <DoorClosedIcon size={24} />
         <h1>Sign Up</h1>
       </a>
