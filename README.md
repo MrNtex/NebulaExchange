@@ -39,7 +39,7 @@ A cutting-edge cryptocurrency exchange platform built to handle real-time tradin
       <div align="center">Crypto Page</div>
     </td>
     <td>
-      <img src="Screenshots/NebulaExchange_4.png" width="400">
+      <img src="Screenshots/NebulaExchange_5.png" width="400">
       <div align="center">AI Model</div>
     </td>
   </tr>
